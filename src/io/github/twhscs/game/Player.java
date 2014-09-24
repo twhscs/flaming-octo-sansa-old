@@ -42,7 +42,7 @@ public class Player extends Entity implements Drawable {
    * The object that plays the 'stuck' sound.
    */
   private final Sound cannotMove = new Sound();
-  
+
   /**
    * Creates a new player with a location at x, y.
    * @param x Starting x position.

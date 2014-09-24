@@ -47,6 +47,10 @@ public class Game {
    * Allows the window to shift focus.
    */
   private Camera camera;
+  /**
+   * The player's personal inventory
+   */
+  private Inventory playerInventory;
   
   /**
    * Creates an instance of the game and runs it.
@@ -64,6 +68,7 @@ public class Game {
     window.create(new VideoMode(windowDimensions.x, windowDimensions.y), windowTitle);
     player.changeMap(new Map(10, 10, Tile.SAND));
     camera = new Camera(window);
+    playerInventory = new Inventory(windowDimensions);
   }
   
   /**
@@ -120,6 +125,29 @@ public class Game {
         case LOST_FOCUS:
           windowFocus = false; // Update windowFocus if the user unfocuses the window
           break;
+        case KEY_PRESSED:
+          /**
+           * Check if the inventory is visible and if it is take input to interact with menu
+           */
+          if(playerInventory.isVisible()){
+            switch(event.asKeyEvent().key){
+              case W:
+                playerInventory.moveSelectionBoxUp();
+                System.out.println("UP");
+                break;
+              case S:
+                playerInventory.moveSelectionBoxDown();
+                System.out.println("DOWN");
+                break;
+            }
+          }
+          /**
+           * Toggle inventory view on pressing Q key
+           */
+          switch(event.asKeyEvent().key){
+            case Q:
+              playerInventory.toggleInventoryDisplay();
+          }
         default:
           break;
       }
@@ -130,7 +158,7 @@ public class Game {
      */
     
     // isKeyPressed will work whether the window is focused or not, therefore we must check manually
-    if (windowFocus) { 
+    if (windowFocus && !playerInventory.isVisible()) { 
       if (Keyboard.isKeyPressed(Key.W)) {
         player.move(Direction.NORTH); // W moves the player up (north)
       } else if (Keyboard.isKeyPressed(Key.S)) {
@@ -164,6 +192,8 @@ public class Game {
     window.draw(player);
     camera.centerOnDefault();
     window.draw(fpsUI);
+    if(playerInventory.isVisible())
+      window.draw(playerInventory);
     window.display(); // Show the window to the user
   }
 }
