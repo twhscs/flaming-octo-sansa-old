@@ -29,7 +29,7 @@ public class Game {
   /**
    * Sets the dimensions (resolution) the window is created with.
    */
-  private final Vector2i windowDimensions = new Vector2i(640, 480);
+  private final Vector2i windowDimensions = new Vector2i(1280, 720);
   /**
    * The main object representing the player.
    */
@@ -138,6 +138,14 @@ public class Game {
               case S:
                 playerInventory.moveSelectionBoxDown();
                 System.out.println("DOWN");
+                break;
+              case A:
+                playerInventory.moveSelectionBoxLeft();
+                System.out.println("LEFT");
+                break;
+              case D:
+                playerInventory.moveSelectionBoxRight();
+                System.out.println("RIGHT");
                 break;
             }
           }

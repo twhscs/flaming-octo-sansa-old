@@ -30,7 +30,7 @@ public class Inventory implements Drawable {
   /**
    * Max items held in each inventory
    */
-  private int maxItems = 10;
+  private final int maxItems = 20;
   /**
    * Initializes the screen position of the inventory
    */
@@ -60,7 +60,7 @@ public class Inventory implements Drawable {
   /**
    * Boolean determining whether the window will be displayed or not
    */
-  private boolean visible = true;
+  private boolean visible = false;
   /**
    * Default inventory object
    */
@@ -97,7 +97,9 @@ public class Inventory implements Drawable {
      * Set selectionBox in the center of the screen and
      * fill it with its color
      */
-    selectionBox.setFillColor(Color.GREEN);
+    selectionBox.setOutlineColor(Color.CYAN);
+    selectionBox.setOutlineThickness(2f);
+    selectionBox.setFillColor(Color.TRANSPARENT);
     selectionBox.setPosition(centerScreenPosition.x + selectionBoxOffsetX, 
         centerScreenPosition.y + selectionBoxOffsetY);
   }
@@ -147,8 +149,15 @@ public class Inventory implements Drawable {
   public void toggleInventoryDisplay(){
     if(visible == false)
       visible = true;
-    else if(visible == true)
+    else if(visible == true){
       visible = false;
+      /**
+       * Return the selection box back to top left slot
+       */
+      selectionBoxOffsetX = 90;
+      selectionBoxOffsetY = 90;
+      resetSelectionBox();
+    }
   }
   
   /**
@@ -166,24 +175,54 @@ public class Inventory implements Drawable {
     /**
      * Move the box down thirty pixels if in valid location
      */
-    if(selectionBoxOffsetY <= 300)
+    if(selectionBoxOffsetY <= 330)
       selectionBoxOffsetY += 30;
     /**
-     * Reset the position
+     * Update the position
      */
-    selectionBox.setPosition(centerScreenPosition.x + selectionBoxOffsetX, 
-        centerScreenPosition.y + selectionBoxOffsetY);
+    resetSelectionBox();
   }
   
   public void moveSelectionBoxUp(){
     /**
      * Move the box up thirty pixels if in valid location
      */
-    if(selectionBoxOffsetY >= 80)
+    if(selectionBoxOffsetY >= 120)
         selectionBoxOffsetY -= 30;
     /**
-     * Reset the position
+     * Update the position
      */
+    resetSelectionBox();
+  }
+  
+  public void moveSelectionBoxRight(){
+    /**
+     * Move the box right two hundred pixels if in valid location
+     */
+    if(selectionBoxOffsetX<=355)
+      selectionBoxOffsetX += 275;
+    /**
+     * Update the position
+     */
+    resetSelectionBox();
+  }
+  
+  public void moveSelectionBoxLeft(){
+    /**
+     * Move the box right two hundred pixels if in valid location
+     */
+    if(selectionBoxOffsetX>200)
+      selectionBoxOffsetX -= 275;
+    /**
+     * Update the position
+     */
+    resetSelectionBox();
+  }
+  
+  /**
+   * Resets the selection box area to the top left slot
+   */
+  public void resetSelectionBox(){
     selectionBox.setPosition(centerScreenPosition.x + selectionBoxOffsetX, 
         centerScreenPosition.y + selectionBoxOffsetY);
   }
