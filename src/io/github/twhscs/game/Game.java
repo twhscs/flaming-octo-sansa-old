@@ -132,19 +132,19 @@ public class Game {
           if(playerInventory.isVisible()){
             switch(event.asKeyEvent().key){
               case W:
-                //playerInventory.moveSelectionBoxUp();
+                playerInventory.moveSelectionBoxUp();
                 System.out.println("UP");
                 break;
               case S:
-                //playerInventory.moveSelectionBoxDown();
+                playerInventory.moveSelectionBoxDown();
                 System.out.println("DOWN");
                 break;
               case A:
-                //playerInventory.moveSelectionBoxLeft();
+                playerInventory.moveSelectionBoxLeft();
                 System.out.println("LEFT");
                 break;
               case D:
-                //playerInventory.moveSelectionBoxRight();
+                playerInventory.moveSelectionBoxRight();
                 System.out.println("RIGHT");
                 break;
               case R:

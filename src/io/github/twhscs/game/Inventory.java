@@ -37,13 +37,13 @@ public class Inventory implements Drawable {
    */
   private Vector2i centerScreenPosition;
   
-  private RectangleShape inventoryBackground;
+  private int selectedSlot = 10;
   
-  private RectangleShape itemSlot = new RectangleShape(new Vector2f(32,32));
+  private RectangleShape inventoryBackground;
   /**
    * Instantiates the selection box
    */
-  private RectangleShape selectionBox = new RectangleShape(new Vector2f(34, 34));
+  private RectangleShape selectionBox;
   /**
    * Boolean determining whether the window will be displayed or not
    */
@@ -62,37 +62,47 @@ public class Inventory implements Drawable {
      */
     centerScreenPosition = new Vector2i((screenResolution.x/2), (screenResolution.y/2));
     
-    for(int i = 0; i<maxItems; i++){
-      int column = i%5;
-      int row = i/5;
-      
-      
-      RectangleShape itemSlot = new RectangleShape(new Vector2f(64,64));
-      itemSlot.setFillColor(new Color(Color.CYAN, 120));
-      itemSlot.setOutlineColor(new Color(Color.CYAN, 200));
-      itemSlot.setOutlineThickness(2f);
-      
-      itemSlots.add(itemSlot);
-      
-      itemSlots.get(i).setPosition(new Vector2f(30 + 70*column, screenResolution.y - 100 - (70 * row + 1)));
-      
-    }
-    
+    createInventorySlots(centerScreenPosition);
+    selectionBox.setPosition(itemSlots.get(selectedSlot).getPosition().x-1,
+        itemSlots.get(selectedSlot).getPosition().y-1);
+
     try{
     }catch(Exception ex){
       ex.printStackTrace();
     }
 
 
-    /**
-     * Set selectionBox in the center of the screen and
-     * fill it with its color
-     */
+
+  }
+  
+
+  public void createInventorySlots(Vector2i centerPosition){
+    
+    
+    int rectSize = 32;
+    int initialScreenOffsetX = centerPosition.x - centerPosition.x/2;
+    int initialScreenOffsetY = centerPosition.y + centerPosition.y/2;
+    
+    selectionBox = new RectangleShape(new Vector2f(rectSize + 2, rectSize + 2));
     selectionBox.setOutlineColor(Color.CYAN);
     selectionBox.setOutlineThickness(2f);
     selectionBox.setFillColor(Color.TRANSPARENT);
-    selectionBox.setPosition(centerScreenPosition.x, centerScreenPosition.y);
-  }
+    
+    for(int i = 0; i<maxItems; i++){
+      int column = i%5;
+      int row = i/5;
+      
+      RectangleShape itemSlot = new RectangleShape(new Vector2f(rectSize,rectSize));
+      itemSlot.setFillColor(new Color(Color.CYAN, 120));
+      itemSlot.setOutlineColor(new Color(Color.CYAN, 200));
+      itemSlot.setOutlineThickness(2f);
+      
+      itemSlots.add(itemSlot);
+      
+      itemSlots.get(i).setPosition(new Vector2f(initialScreenOffsetX + (rectSize + 6)*column,
+          initialScreenOffsetY - ((rectSize + 6) * row + 1)));
+      }
+    }
 
   public void addItem(Item i) {
     
@@ -154,6 +164,41 @@ public class Inventory implements Drawable {
    */
   public boolean isVisible(){
     return visible;
+  }
+  
+  public void moveSelectionBoxUp(){
+
+    if(selectedSlot<10)
+      selectedSlot += 5;
+    
+    selectionBox.setPosition(itemSlots.get(selectedSlot).getPosition().x-1, itemSlots.get(selectedSlot).getPosition().y-1);
+  }
+  
+  public void moveSelectionBoxDown(){
+
+    if(selectedSlot>4)
+      selectedSlot -= 5;
+    
+    selectionBox.setPosition(itemSlots.get(selectedSlot).getPosition().x-1,
+        itemSlots.get(selectedSlot).getPosition().y-1);
+    }
+  
+  public void moveSelectionBoxLeft(){
+    
+    if(selectedSlot>0)
+      selectedSlot--;
+    
+    selectionBox.setPosition(itemSlots.get(selectedSlot).getPosition().x-1,
+        itemSlots.get(selectedSlot).getPosition().y-1);
+  }
+  
+  public void moveSelectionBoxRight(){
+    
+    if(selectedSlot<14)
+      selectedSlot++;
+    
+    selectionBox.setPosition(itemSlots.get(selectedSlot).getPosition().x-1,
+        itemSlots.get(selectedSlot).getPosition().y-1);
   }
 
 
