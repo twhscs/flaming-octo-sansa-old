@@ -42,7 +42,7 @@ public class Inventory implements Drawable {
   /**
    * The amount of offset the selectionBox is set to by default
    */
-  private int selectionBoxOffsetX = 90;
+  private int selectionBoxOffsetX = 100;
   private int selectionBoxOffsetY = 90;
   /**   
    * Initializes texture and sprite for inventory
@@ -66,7 +66,6 @@ public class Inventory implements Drawable {
    */
   
   public Inventory(Vector2i screenResolution){
-    
     /**
      * Load the sprite and sound files
      */
@@ -106,11 +105,14 @@ public class Inventory implements Drawable {
 
   public void addItem(Item i) {
     
+    System.out.println(inventory.size());
     /**
      * If inventory is not full add item to the inventory
      */
-    if(inventory.size() <= maxItems)
+    if(inventory.size() < maxItems){
+      i.setDisplayPosition(centerScreenPosition, inventory.size(), maxItems);
       inventory.add(i);
+    }
     /**
      * Play full bag sound
      */
@@ -140,6 +142,9 @@ public class Inventory implements Drawable {
   public void draw(RenderTarget target, RenderStates states) {
     invSprite.draw(target, states);
     selectionBox.draw(target,states);
+    for(Item item: inventory){
+      item.draw(target, states);
+    }
    
   }
   
@@ -200,7 +205,7 @@ public class Inventory implements Drawable {
      * Move the box right two hundred pixels if in valid location
      */
     if(selectionBoxOffsetX<=355)
-      selectionBoxOffsetX += 275;
+      selectionBoxOffsetX += 230;
     /**
      * Update the position
      */
@@ -212,7 +217,7 @@ public class Inventory implements Drawable {
      * Move the box right two hundred pixels if in valid location
      */
     if(selectionBoxOffsetX>200)
-      selectionBoxOffsetX -= 275;
+      selectionBoxOffsetX -= 230;
     /**
      * Update the position
      */

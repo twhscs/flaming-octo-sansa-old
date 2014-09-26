@@ -147,6 +147,8 @@ public class Game {
                 playerInventory.moveSelectionBoxRight();
                 System.out.println("RIGHT");
                 break;
+              case R:
+                playerInventory.addItem(new Item(ItemType.HEALTH_POTION));
             }
           }
           /**
