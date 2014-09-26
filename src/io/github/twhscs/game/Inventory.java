@@ -27,71 +27,63 @@ public class Inventory implements Drawable {
    */
   private ArrayList<Item> inventory = new ArrayList<Item>();
   
+  private ArrayList<RectangleShape> itemSlots = new ArrayList<RectangleShape>();
   /**
    * Max items held in each inventory
    */
-  private final int maxItems = 20;
+  private final int maxItems = 15;
   /**
    * Initializes the screen position of the inventory
    */
   private Vector2i centerScreenPosition;
+  
+  private RectangleShape inventoryBackground;
+  
+  private RectangleShape itemSlot = new RectangleShape(new Vector2f(32,32));
   /**
    * Instantiates the selection box
    */
-  private RectangleShape selectionBox = new RectangleShape(new Vector2f(200, 30));
-  /**
-   * The amount of offset the selectionBox is set to by default
-   */
-  private int selectionBoxOffsetX = 100;
-  private int selectionBoxOffsetY = 90;
-  /**   
-   * Initializes texture and sprite for inventory
-   */
-  private Texture invTexture = new Texture();
-  private Sprite invSprite;
-  /**
-   * Creates a sound buffer for cannotAddItem to be loaded into memory
-   */
-  SoundBuffer cannotAddItemBuffer = new SoundBuffer();
- /**
-  * Initialize sound object
-  */
-  Sound cannotAddItem = new Sound();
+  private RectangleShape selectionBox = new RectangleShape(new Vector2f(34, 34));
   /**
    * Boolean determining whether the window will be displayed or not
    */
   private boolean visible = false;
+  
   /**
    * Default inventory object
    */
-  
   public Inventory(Vector2i screenResolution){
-    /**
-     * Load the sprite and sound files
-     */
-    try{
-     cannotAddItemBuffer.loadFromFile(Paths.get("resources/beep-02.wav"));
-     invTexture.loadFromFile(Paths.get("resources/inventory_texture.png"));
-    }catch(Exception ex){
-      ex.printStackTrace();
-    }
+
+    inventoryBackground = new RectangleShape(new Vector2f(screenResolution));
+    inventoryBackground.setFillColor(new Color(Color.BLACK, 230));
+    
     /**
      * Find the center position on the screen on the screen
      */
-    centerScreenPosition = new Vector2i((screenResolution.x/2) - (invTexture.getSize().x/2), 
-        (screenResolution.y/2) - (invTexture.getSize().y/2));
-    /**
-     * Set the sprite to the inventory texture
-     */
-    invSprite = new Sprite(invTexture);
-    /**
-     * Set the sound object cannotAddItem to load the sound from the sound buffer
-     */
-    cannotAddItem.setBuffer(cannotAddItemBuffer);
-    /**
-     * Place the sprite in the center of the screen
-     */
-    invSprite.setPosition(centerScreenPosition.x, centerScreenPosition.y);
+    centerScreenPosition = new Vector2i((screenResolution.x/2), (screenResolution.y/2));
+    
+    for(int i = 0; i<maxItems; i++){
+      int column = i%5;
+      int row = i/5;
+      
+      
+      RectangleShape itemSlot = new RectangleShape(new Vector2f(64,64));
+      itemSlot.setFillColor(new Color(Color.CYAN, 120));
+      itemSlot.setOutlineColor(new Color(Color.CYAN, 200));
+      itemSlot.setOutlineThickness(2f);
+      
+      itemSlots.add(itemSlot);
+      
+      itemSlots.get(i).setPosition(new Vector2f(30 + 70*column, screenResolution.y - 100 - (70 * row + 1)));
+      
+    }
+    
+    try{
+    }catch(Exception ex){
+      ex.printStackTrace();
+    }
+
+
     /**
      * Set selectionBox in the center of the screen and
      * fill it with its color
@@ -99,8 +91,7 @@ public class Inventory implements Drawable {
     selectionBox.setOutlineColor(Color.CYAN);
     selectionBox.setOutlineThickness(2f);
     selectionBox.setFillColor(Color.TRANSPARENT);
-    selectionBox.setPosition(centerScreenPosition.x + selectionBoxOffsetX, 
-        centerScreenPosition.y + selectionBoxOffsetY);
+    selectionBox.setPosition(centerScreenPosition.x, centerScreenPosition.y);
   }
 
   public void addItem(Item i) {
@@ -110,14 +101,7 @@ public class Inventory implements Drawable {
      * If inventory is not full add item to the inventory
      */
     if(inventory.size() < maxItems){
-      i.setDisplayPosition(centerScreenPosition, inventory.size(), maxItems);
       inventory.add(i);
-    }
-    /**
-     * Play full bag sound
-     */
-    else{
-      cannotAddItem.play();
     }
   }
   
@@ -140,8 +124,13 @@ public class Inventory implements Drawable {
    * Method for the game to render inventory
    */
   public void draw(RenderTarget target, RenderStates states) {
-    invSprite.draw(target, states);
+    inventoryBackground.draw(target, states);
     selectionBox.draw(target,states);
+    
+    for(RectangleShape inventorySlots: itemSlots){
+      inventorySlots.draw(target, states);
+    }
+    
     for(Item item: inventory){
       item.draw(target, states);
     }
@@ -156,12 +145,6 @@ public class Inventory implements Drawable {
       visible = true;
     else if(visible == true){
       visible = false;
-      /**
-       * Return the selection box back to top left slot
-       */
-      selectionBoxOffsetX = 90;
-      selectionBoxOffsetY = 90;
-      resetSelectionBox();
     }
   }
   
@@ -172,63 +155,6 @@ public class Inventory implements Drawable {
   public boolean isVisible(){
     return visible;
   }
-  
-  /**
-   * Moves the selection box if in a valid location on the inventory
-   */
-  public void moveSelectionBoxDown(){
-    /**
-     * Move the box down thirty pixels if in valid location
-     */
-    if(selectionBoxOffsetY <= 330)
-      selectionBoxOffsetY += 30;
-    /**
-     * Update the position
-     */
-    resetSelectionBox();
-  }
-  
-  public void moveSelectionBoxUp(){
-    /**
-     * Move the box up thirty pixels if in valid location
-     */
-    if(selectionBoxOffsetY >= 120)
-        selectionBoxOffsetY -= 30;
-    /**
-     * Update the position
-     */
-    resetSelectionBox();
-  }
-  
-  public void moveSelectionBoxRight(){
-    /**
-     * Move the box right two hundred pixels if in valid location
-     */
-    if(selectionBoxOffsetX<=355)
-      selectionBoxOffsetX += 230;
-    /**
-     * Update the position
-     */
-    resetSelectionBox();
-  }
-  
-  public void moveSelectionBoxLeft(){
-    /**
-     * Move the box right two hundred pixels if in valid location
-     */
-    if(selectionBoxOffsetX>200)
-      selectionBoxOffsetX -= 230;
-    /**
-     * Update the position
-     */
-    resetSelectionBox();
-  }
-  
-  /**
-   * Resets the selection box area to the top left slot
-   */
-  public void resetSelectionBox(){
-    selectionBox.setPosition(centerScreenPosition.x + selectionBoxOffsetX, 
-        centerScreenPosition.y + selectionBoxOffsetY);
-  }
+
+
 }

@@ -29,7 +29,7 @@ public class Game {
   /**
    * Sets the dimensions (resolution) the window is created with.
    */
-  private final Vector2i windowDimensions = new Vector2i(1280, 720);
+  private final Vector2i windowDimensions = new Vector2i(640, 480);
   /**
    * The main object representing the player.
    */
@@ -132,19 +132,19 @@ public class Game {
           if(playerInventory.isVisible()){
             switch(event.asKeyEvent().key){
               case W:
-                playerInventory.moveSelectionBoxUp();
+                //playerInventory.moveSelectionBoxUp();
                 System.out.println("UP");
                 break;
               case S:
-                playerInventory.moveSelectionBoxDown();
+                //playerInventory.moveSelectionBoxDown();
                 System.out.println("DOWN");
                 break;
               case A:
-                playerInventory.moveSelectionBoxLeft();
+                //playerInventory.moveSelectionBoxLeft();
                 System.out.println("LEFT");
                 break;
               case D:
-                playerInventory.moveSelectionBoxRight();
+                //playerInventory.moveSelectionBoxRight();
                 System.out.println("RIGHT");
                 break;
               case R:
