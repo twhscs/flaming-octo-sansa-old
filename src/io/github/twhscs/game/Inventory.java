@@ -36,9 +36,13 @@ public class Inventory implements Drawable {
    * Initializes the screen position of the inventory
    */
   private Vector2i centerScreenPosition;
-  
-  private int selectedSlot = 10;
-  
+  /**
+   * The slot the inventory selector is hovering on
+   */
+  private int selectedSlot = 0;
+  /**
+   * The actual background of the inventory
+   */
   private RectangleShape inventoryBackground;
   /**
    * Instantiates the selection box
@@ -54,88 +58,112 @@ public class Inventory implements Drawable {
    */
   public Inventory(Vector2i screenResolution){
 
-    inventoryBackground = new RectangleShape(new Vector2f(screenResolution));
-    inventoryBackground.setFillColor(new Color(Color.BLACK, 230));
+    inventoryBackground = new RectangleShape(new Vector2f(screenResolution)); //Creates the background
+    inventoryBackground.setFillColor(new Color(Color.BLACK, 230)); //Makes the background black
     
     /**
      * Find the center position on the screen on the screen
      */
     centerScreenPosition = new Vector2i((screenResolution.x/2), (screenResolution.y/2));
     
-    createInventorySlots(centerScreenPosition);
-    selectionBox.setPosition(itemSlots.get(selectedSlot).getPosition().x-1,
-        itemSlots.get(selectedSlot).getPosition().y-1);
+    createInventorySlots(centerScreenPosition); //Creates all the inventory slots in their positions
 
-    try{
-    }catch(Exception ex){
-      ex.printStackTrace();
-    }
-
-
-
+    selectionBox.setPosition(itemSlots.get(selectedSlot).getPosition().x-1, //Initializes the selector in starting spot
+        itemSlots.get(selectedSlot).getPosition().y-1); //Needs an offset of one because outline box is two pixels wider on each side
   }
   
-
+/**
+ * Initializes all inventory slots in appropriate places
+ * @param centerPosition is center of the screen
+ */
   public void createInventorySlots(Vector2i centerPosition){
     
     
-    int rectSize = 64;
+    int rectSize = 64; //Number used to scale all other inventory dimensions
     
-    int initialScreenOffsetX = centerPosition.x - centerPosition.x/4;
-    int initialScreenOffsetY = centerPosition.y + centerPosition.y/2;
+    int rectSpacing = 6;
+    int initialScreenOffsetX = centerPosition.x - centerPosition.x/4; //Center the inventory on x axis
+    int initialScreenOffsetY = centerPosition.y + centerPosition.y/2; //Center inventory on y axis
     
+    /**
+     * Creates the selection box with appropriate colors and scale.
+     * Selection box is always larger than the box it is placed on by two pixels on each side
+     */
     selectionBox = new RectangleShape(new Vector2f(rectSize + 2, rectSize + 2));
     selectionBox.setOutlineColor(Color.CYAN);
     selectionBox.setOutlineThickness(2f);
     selectionBox.setFillColor(Color.TRANSPARENT);
     
+    /**
+     * Creates the stats box which will hold player and item information
+     */
     RectangleShape statsBox = new RectangleShape();
-    statsBox.setSize(new Vector2f(rectSize * 2 + 4, rectSize * 4));
+    statsBox.setSize(new Vector2f(rectSize * 2 + 4, rectSize * 4)); //Sets size as two inventory slots wide and four tall
     statsBox.setFillColor(new Color(Color.CYAN, 120));
     statsBox.setOutlineThickness(2f);
     statsBox.setOutlineColor(new Color(Color.CYAN, 200));
-    statsBox.setPosition(new Vector2f(initialScreenOffsetX, initialScreenOffsetY - ((rectSize + 6) * 6)));
+    statsBox.setPosition(new Vector2f(initialScreenOffsetX, initialScreenOffsetY - ((rectSize + 6) * 6))); //Puts center screen but six inventory slots above y center
     
+    /**
+     * Creates player box which will hold player image
+     */
     RectangleShape playerBox = new RectangleShape();
-    playerBox.setSize(new Vector2f(rectSize * 2 + 4, rectSize * 4));
+    playerBox.setSize(new Vector2f(rectSize * 2 + 4, rectSize * 4)); //Set as two slots wide and four slots tall
     playerBox.setFillColor(new Color(Color.CYAN, 120));
     playerBox.setOutlineThickness(2f);
     playerBox.setOutlineColor(new Color(Color.CYAN, 200));
-    playerBox.setPosition(new Vector2f(initialScreenOffsetX + (rectSize + 6)*3,
-        initialScreenOffsetY - (rectSize + 6) * 6));
+    playerBox.setPosition(new Vector2f(initialScreenOffsetX + (rectSize + rectSpacing)*3, //Move box over three slots on x axis
+        initialScreenOffsetY - (rectSize + rectSpacing) * 6)); //Scale box six slots above y offset position
     
-    
+    /**
+     * Creates all actual inventory slots
+     */
     for(int i = 0; i<maxItems; i++){
-      int column = i%5;
-      int row = i/5;
+      int column = i%5; //Five columns
+      int row = i/5; //Three rows
       
+      /**
+       * All attributes of item slots are set
+       */
       RectangleShape itemSlot = new RectangleShape(new Vector2f(rectSize,rectSize));
       itemSlot.setFillColor(new Color(Color.CYAN, 120));
       itemSlot.setOutlineColor(new Color(Color.CYAN, 200));
       itemSlot.setOutlineThickness(2f);
       
+      //Adds item slot to inventory arraylist
       itemSlots.add(itemSlot);
       
-      itemSlots.get(i).setPosition(new Vector2f(initialScreenOffsetX + (rectSize+ 6)*column,
-          initialScreenOffsetY - ((rectSize + 6) * row + 1)));
+      //Positions each item slot based on where the preceding one was placed by columns and rows
+      itemSlots.get(i).setPosition(new Vector2f((initialScreenOffsetX + (rectSize+ rectSpacing)*column),
+          (initialScreenOffsetY -(rectSize + rectSpacing)* 2) + ((rectSize + rectSpacing) * row + 1)));
       }
     
-    for(int i = 0; i<4; i++){
+    /**
+     * Creates four armor slots between player and stat boxes
+     */
+    for(int count = 0; count<4; count++){
       
+      /**
+       * Set armor slot attributes
+       */
       RectangleShape armorSlot = new RectangleShape(new Vector2f(rectSize - 2, rectSize - 2));
       armorSlot.setFillColor(new Color(Color.CYAN, 120));
       armorSlot.setOutlineColor(new Color(Color.CYAN, 200));
       armorSlot.setOutlineThickness(2f);
       
-      armorSlot.setPosition(initialScreenOffsetX + ((rectSize + 6)*2),
-          (initialScreenOffsetY - ((rectSize + 6) * 6) + ((rectSize * i)) + 2));
+      armorSlot.setPosition(initialScreenOffsetX + ((rectSize + 6)*2), // Offset armor slot on x axis by two squares right of center
+          (initialScreenOffsetY - ((rectSize - 7)*4) - ((rectSize * count)) + 2)); //Places first armor slot on bottom and places the next slot on top of preceding
       
+      //Adds the armor slots to the inventory arrayList
       itemSlots.add(armorSlot);
     }
-      
+    
+    /**
+     * Adds stat and player boxes to the end of the inventory arrayList
+     */
     itemSlots.add(statsBox);
     itemSlots.add(playerBox);
-    
+
     }
 
   public void addItem(Item i) {
@@ -200,66 +228,72 @@ public class Inventory implements Drawable {
     return visible;
   }
   
+  /**
+   * Sets the selection box to the selected slot's position and scales it
+   */
+  public void placeSelectionBox(){
+    
+    selectionBox.setPosition(itemSlots.get(selectedSlot).getPosition().x-1, //Place box over selected box and move
+        itemSlots.get(selectedSlot).getPosition().y-1);                     //left by one pixel to account for selection box being two pixels wider and taller
+    
+    selectionBox.setSize(new Vector2f(itemSlots.get(selectedSlot).getSize().x + 2, //Set selection box to same
+        itemSlots.get(selectedSlot).getSize().y + 2));                             //size as selected box but two pixels wider and taller
+  }
+  
+  /**
+   * Moves selection box on up button press
+   */
   public void moveSelectionBoxUp(){
 
-    if(selectedSlot<=9)
-      selectedSlot += 5;
-    
-    else if(selectedSlot<=14 && selectedSlot>=10)
-      selectedSlot = 18;
-    
-    else if(selectedSlot<=18){
-      if(selectedSlot != 15)
-        selectedSlot--;
+    if(selectedSlot >= 5){ //If slot is not on the top row of inventory slots
+      if(selectedSlot >= 15 && selectedSlot <= 17) //Check if selected slot is an armor slot
+        selectedSlot++; //If it is an armor slot, move up one armor slot
+      else if(selectedSlot <= 14) //If slot is not on the top row but not an armor slot 
+        selectedSlot -= 5; //Move down one row
     }
-    
-    selectionBox.setPosition(itemSlots.get(selectedSlot).getPosition().x-1,
-        itemSlots.get(selectedSlot).getPosition().y-1);
-    
-    selectionBox.setSize(new Vector2f(itemSlots.get(selectedSlot).getSize().x + 2,
-        itemSlots.get(selectedSlot).getSize().y + 2));
+    else if(selectedSlot <=4) //If the slot is on the top row of inventory slots
+      selectedSlot = 15; //Move to bottom armor slot
+
+    placeSelectionBox(); //Resize and re-position selection box
   }
   
+  /**
+   * Moves selection box on down button press
+   */
   public void moveSelectionBoxDown(){
 
-    if(selectedSlot>=5 && selectedSlot<=14)
-      selectedSlot -= 5;
+    if(selectedSlot >= 0 && selectedSlot <= 9) //Check if selected box is on top two inventory rows
+      selectedSlot += 5; //If it is, move down a row
+
+    else if(selectedSlot >= 16 && selectedSlot <= 18) //Check if selected slot is the top three armor slots
+      selectedSlot--; //If it is, move down armor slot
     
-    else if(selectedSlot>14 && selectedSlot<=17)
-      selectedSlot++;
+    else if(selectedSlot == 15) //Check if selected slot is bottom armor slot
+      selectedSlot = 3; //If so, move to inventory slot directly below bottom armor slot
     
-    else if(selectedSlot == 18)
-      selectedSlot = 12;
-    
-    selectionBox.setPosition(itemSlots.get(selectedSlot).getPosition().x-1,
-        itemSlots.get(selectedSlot).getPosition().y-1);
-    
-    selectionBox.setSize(new Vector2f(itemSlots.get(selectedSlot).getSize().x + 2,
-        itemSlots.get(selectedSlot).getSize().y + 2));
+    placeSelectionBox(); //Readjusts and repositions selection box
     }
   
+  /**
+   * Move selection box on left key press
+   */
   public void moveSelectionBoxLeft(){
     
-    if(selectedSlot>=1 && selectedSlot <= 14)
-      selectedSlot--;
+    if(selectedSlot>=1 && selectedSlot <= 14) //Check if selection box is on inventory slot except bottom left
+      selectedSlot--; //If it is, move left one slot
     
-    selectionBox.setPosition(itemSlots.get(selectedSlot).getPosition().x-1,
-        itemSlots.get(selectedSlot).getPosition().y-1);
-    
-    selectionBox.setSize(new Vector2f(itemSlots.get(selectedSlot).getSize().x + 2,
-        itemSlots.get(selectedSlot).getSize().y + 2));
+    placeSelectionBox(); //Re-adjust and reposition selection box
   }
   
+  /**
+   * Move selection box on right button press
+   */
   public void moveSelectionBoxRight(){
     
-    if(selectedSlot<=13)
-      selectedSlot++;
+    if(selectedSlot<=13) //Check if selection box is in inventory slot except top right
+      selectedSlot++; //If it is, move right one slot
     
-    selectionBox.setPosition(itemSlots.get(selectedSlot).getPosition().x-1,
-        itemSlots.get(selectedSlot).getPosition().y-1);
-    
-    selectionBox.setSize(new Vector2f(itemSlots.get(selectedSlot).getSize().x + 2,
-        itemSlots.get(selectedSlot).getSize().y + 2));
+    placeSelectionBox(); //Re-adjust and reposition selection box
   }
 
 
