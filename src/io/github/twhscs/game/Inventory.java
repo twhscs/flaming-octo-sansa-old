@@ -79,7 +79,8 @@ public class Inventory implements Drawable {
   public void createInventorySlots(Vector2i centerPosition){
     
     
-    int rectSize = 32;
+    int rectSize = 64;
+    
     int initialScreenOffsetX = centerPosition.x - centerPosition.x/2;
     int initialScreenOffsetY = centerPosition.y + centerPosition.y/2;
     
@@ -87,6 +88,14 @@ public class Inventory implements Drawable {
     selectionBox.setOutlineColor(Color.CYAN);
     selectionBox.setOutlineThickness(2f);
     selectionBox.setFillColor(Color.TRANSPARENT);
+    
+    RectangleShape statsBox = new RectangleShape();
+    statsBox.setSize(new Vector2f(rectSize * 2 + 4, rectSize * 4));
+    statsBox.setFillColor(new Color(Color.CYAN, 120));
+    statsBox.setOutlineThickness(2f);
+    statsBox.setOutlineColor(new Color(Color.CYAN, 200));
+    statsBox.setPosition(new Vector2f(initialScreenOffsetX, initialScreenOffsetY - ((rectSize + 6) * 6)));
+    
     
     for(int i = 0; i<maxItems; i++){
       int column = i%5;
@@ -99,9 +108,25 @@ public class Inventory implements Drawable {
       
       itemSlots.add(itemSlot);
       
-      itemSlots.get(i).setPosition(new Vector2f(initialScreenOffsetX + (rectSize + 6)*column,
+      itemSlots.get(i).setPosition(new Vector2f(initialScreenOffsetX + (rectSize+ 6)*column,
           initialScreenOffsetY - ((rectSize + 6) * row + 1)));
       }
+    
+    for(int i = 0; i<4; i++){
+      
+      RectangleShape armorSlot = new RectangleShape(new Vector2f(rectSize - 2, rectSize - 2));
+      armorSlot.setFillColor(new Color(Color.CYAN, 120));
+      armorSlot.setOutlineColor(new Color(Color.CYAN, 200));
+      armorSlot.setOutlineThickness(2f);
+      
+      armorSlot.setPosition(initialScreenOffsetX + ((rectSize + 6)*2),
+          (initialScreenOffsetY - ((rectSize + 6) * 6) + ((rectSize * i)) + 2));
+      
+      itemSlots.add(armorSlot);
+    }
+      
+    itemSlots.add(statsBox);
+    
     }
 
   public void addItem(Item i) {
@@ -168,10 +193,14 @@ public class Inventory implements Drawable {
   
   public void moveSelectionBoxUp(){
 
-    if(selectedSlot<10)
+    if(selectedSlot<14)
       selectedSlot += 5;
     
-    selectionBox.setPosition(itemSlots.get(selectedSlot).getPosition().x-1, itemSlots.get(selectedSlot).getPosition().y-1);
+    selectionBox.setPosition(itemSlots.get(selectedSlot).getPosition().x-1,
+        itemSlots.get(selectedSlot).getPosition().y-1);
+    
+    selectionBox.setSize(new Vector2f(itemSlots.get(selectedSlot).getSize().x + 2,
+        itemSlots.get(selectedSlot).getSize().y + 2));
   }
   
   public void moveSelectionBoxDown(){
@@ -181,6 +210,9 @@ public class Inventory implements Drawable {
     
     selectionBox.setPosition(itemSlots.get(selectedSlot).getPosition().x-1,
         itemSlots.get(selectedSlot).getPosition().y-1);
+    
+    selectionBox.setSize(new Vector2f(itemSlots.get(selectedSlot).getSize().x + 2,
+        itemSlots.get(selectedSlot).getSize().y + 2));
     }
   
   public void moveSelectionBoxLeft(){
@@ -190,15 +222,21 @@ public class Inventory implements Drawable {
     
     selectionBox.setPosition(itemSlots.get(selectedSlot).getPosition().x-1,
         itemSlots.get(selectedSlot).getPosition().y-1);
+    
+    selectionBox.setSize(new Vector2f(itemSlots.get(selectedSlot).getSize().x + 2,
+        itemSlots.get(selectedSlot).getSize().y + 2));
   }
   
   public void moveSelectionBoxRight(){
     
-    if(selectedSlot<14)
+    if(selectedSlot<19)
       selectedSlot++;
     
     selectionBox.setPosition(itemSlots.get(selectedSlot).getPosition().x-1,
         itemSlots.get(selectedSlot).getPosition().y-1);
+    
+    selectionBox.setSize(new Vector2f(itemSlots.get(selectedSlot).getSize().x + 2,
+        itemSlots.get(selectedSlot).getSize().y + 2));
   }
 
 
