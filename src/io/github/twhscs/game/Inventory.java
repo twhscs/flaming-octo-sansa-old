@@ -81,7 +81,7 @@ public class Inventory implements Drawable {
     
     int rectSize = 64;
     
-    int initialScreenOffsetX = centerPosition.x - centerPosition.x/2;
+    int initialScreenOffsetX = centerPosition.x - centerPosition.x/4;
     int initialScreenOffsetY = centerPosition.y + centerPosition.y/2;
     
     selectionBox = new RectangleShape(new Vector2f(rectSize + 2, rectSize + 2));
@@ -95,6 +95,14 @@ public class Inventory implements Drawable {
     statsBox.setOutlineThickness(2f);
     statsBox.setOutlineColor(new Color(Color.CYAN, 200));
     statsBox.setPosition(new Vector2f(initialScreenOffsetX, initialScreenOffsetY - ((rectSize + 6) * 6)));
+    
+    RectangleShape playerBox = new RectangleShape();
+    playerBox.setSize(new Vector2f(rectSize * 2 + 4, rectSize * 4));
+    playerBox.setFillColor(new Color(Color.CYAN, 120));
+    playerBox.setOutlineThickness(2f);
+    playerBox.setOutlineColor(new Color(Color.CYAN, 200));
+    playerBox.setPosition(new Vector2f(initialScreenOffsetX + (rectSize + 6)*3,
+        initialScreenOffsetY - (rectSize + 6) * 6));
     
     
     for(int i = 0; i<maxItems; i++){
@@ -126,6 +134,7 @@ public class Inventory implements Drawable {
     }
       
     itemSlots.add(statsBox);
+    itemSlots.add(playerBox);
     
     }
 
@@ -193,8 +202,16 @@ public class Inventory implements Drawable {
   
   public void moveSelectionBoxUp(){
 
-    if(selectedSlot<14)
+    if(selectedSlot<=9)
       selectedSlot += 5;
+    
+    else if(selectedSlot<=14 && selectedSlot>=10)
+      selectedSlot = 18;
+    
+    else if(selectedSlot<=18){
+      if(selectedSlot != 15)
+        selectedSlot--;
+    }
     
     selectionBox.setPosition(itemSlots.get(selectedSlot).getPosition().x-1,
         itemSlots.get(selectedSlot).getPosition().y-1);
@@ -205,8 +222,14 @@ public class Inventory implements Drawable {
   
   public void moveSelectionBoxDown(){
 
-    if(selectedSlot>4)
+    if(selectedSlot>=5 && selectedSlot<=14)
       selectedSlot -= 5;
+    
+    else if(selectedSlot>14 && selectedSlot<=17)
+      selectedSlot++;
+    
+    else if(selectedSlot == 18)
+      selectedSlot = 12;
     
     selectionBox.setPosition(itemSlots.get(selectedSlot).getPosition().x-1,
         itemSlots.get(selectedSlot).getPosition().y-1);
@@ -217,7 +240,7 @@ public class Inventory implements Drawable {
   
   public void moveSelectionBoxLeft(){
     
-    if(selectedSlot>0)
+    if(selectedSlot>=1 && selectedSlot <= 14)
       selectedSlot--;
     
     selectionBox.setPosition(itemSlots.get(selectedSlot).getPosition().x-1,
@@ -229,7 +252,7 @@ public class Inventory implements Drawable {
   
   public void moveSelectionBoxRight(){
     
-    if(selectedSlot<19)
+    if(selectedSlot<=13)
       selectedSlot++;
     
     selectionBox.setPosition(itemSlots.get(selectedSlot).getPosition().x-1,
