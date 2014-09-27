@@ -1,11 +1,5 @@
 package io.github.twhscs.game;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
 import org.jsfml.graphics.Drawable;
 import org.jsfml.graphics.PrimitiveType;
 import org.jsfml.graphics.RenderStates;
@@ -19,6 +13,12 @@ import org.jsfml.system.Vector2i;
 
 import io.github.twhscs.game.util.ImageResource;
 import io.github.twhscs.game.util.Random;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * A map or level for the player to interact in. Can be created manually or procedurally.
@@ -90,6 +90,7 @@ public class Map implements Drawable {
   /**
    * Draw the map onto the window.
    */
+  @Override
   public void draw(RenderTarget target, RenderStates states) {
     vertexArray = new VertexArray();
     vertexArray.setPrimitiveType(PrimitiveType.QUADS); 

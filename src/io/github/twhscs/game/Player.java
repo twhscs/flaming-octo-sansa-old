@@ -53,8 +53,8 @@ public class Player extends Entity {
   /**
    * Create a new player at (0, 0).
    */
-  public Player(DialogueUIElement d) {
-    this(new Location(0, 0), d);
+  public Player() {
+    this(new Location(0, 0), null);
   }
   
   /**
@@ -88,7 +88,8 @@ public class Player extends Entity {
   /**
    * Update the animation progress.
    */
-  public void update() {
+  @Override
+public void update() {
     if (currentAction == PlayerAction.MOVING) { // If the player is moving
       if (entitySprite.finishedAnimating()) { // If the animation is complete
         currentAction = PlayerAction.NONE; // Stop moving

@@ -25,8 +25,8 @@ public class Camera {
    * @param w The window for which to create the camera.
    */
   public Camera(RenderWindow w) {
-    window = w;
-    defaultView = (View) window.getDefaultView();
+   // window = w;
+    //defaultView = (View) window.getDefaultView();
   }
   
   /**
@@ -49,7 +49,7 @@ public class Camera {
      * Rounding was creating pixel off-by-one errors
      * Sometimes it would round up, sometimes down creating a 1 px difference
      */
-    cameraPos = new Vector2f((float) (int)(cameraPos.x), (float) (int)(cameraPos.y));
+    cameraPos = new Vector2f((int)(cameraPos.x), (int)(cameraPos.y));
     newView.setCenter(cameraPos); // Set the new position
     window.setView(newView); // Set the view
   }
