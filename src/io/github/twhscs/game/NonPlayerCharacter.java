@@ -57,7 +57,7 @@ public class NonPlayerCharacter extends Entity {
     if (!moving && entitySprite.finishedAnimating()) { // If not moving or animating
       Location newLoc = entityLoc.getRelativeLocation(d); // Find the location in direction d
       entityLoc.setDirection(d); // Update the NPC's direction
-      if (parentMap.isValidLocation(newLoc)) { // If the new location is valid
+      if (getParentMap().isValidLocation(newLoc)) { // If the new location is valid
         moving = true; // Start moving
         entitySprite.startAnimation(AnimationType.WALKING); // Start walking animation
       } else {

@@ -3,78 +3,69 @@ package io.github.twhscs.game;
 import org.jsfml.graphics.Drawable;
 import org.jsfml.graphics.RenderStates;
 import org.jsfml.graphics.RenderTarget;
+import org.jsfml.graphics.Sprite;
 
-/**
- * The base class for all players, NPCs, monsters, items etc.
- * @author chris
- *
- */
-public abstract class Entity implements Drawable, Comparable<Entity> {
-  /**
-   * The entity location.
-   */
-  protected Location entityLoc;
-  /**
-   * The animated sprite representing the entity.
-   */
-  protected AnimatedSprite entitySprite;
-  /**
-   * The map this entity currently resides on.
-   */
-  protected Map parentMap;
-  
-  /**
-   * Get the entity location.
-   * @return The entity location.
-   */
-  public Location getLocation() {
-    return entityLoc;
+import io.github.twhscs.game.AnimatedSprite.Animation;
+import io.github.twhscs.game.Location.Direction;
+import io.github.twhscs.game.Player.Action;
+
+public abstract class Entity implements Drawable, Updateable {
+
+  private Location location;
+
+  private Map parentMap;
+
+  private Sprite sprite;
+
+  protected final void setSprite(final Sprite sprite) {
+    this.sprite = sprite;
   }
   
-  /**
-   * Set the entity location.
-   * @param l The new location.
-   */
-  public void setLocation(Location l) {
-    entityLoc = l;
+  protected final Sprite getSprite() {
+    return sprite;
   }
-  
-  /**
-   * Draw the animated sprite.
-   */
-  public void draw(RenderTarget target, RenderStates states) {
-    entitySprite.getSprite().draw(target, states);
+
+  public final Location getLocation() {
+    return location;
   }
-  
-  /**
-   * Update all entity logic on fixed time-step.
-   */
-  public void update() {
-    // Update the animation, if there is no current animation this call will be ignored
-    entitySprite.animate();
+
+  public final void setLocation(final Location location) {
+    this.location = location;
   }
-  
-  /**
-   * Update the map this entity resides on.
-   * @param m The new map the entity is on.
-   */
-  public void setParentMap(Map m) {
-    parentMap = m;
-  }
-  
-  /**
-   * Get the map this entity resides on.
-   * @return The current map the entity is on.
-   */
-  public Map getParentMap() {
+
+  public final Map getParentMap() {
     return parentMap;
   }
+
+  public final void setParentMap(final Map parentMap) {
+    this.parentMap = parentMap;
+  }
+
+  public void move(final Direction direction) {
+    final Location relativeLocation = location.getRelativeLocation(direction);
+    location.setDirection(direction);
+    if (parentMap.isValidLocation(relativeLocation)) {
+      setLocation(relativeLocation);
+      if (this instanceof Player) {
+        Player player = (Player) this;
+        player.setAction(Action.MOVING);
+      }
+      if (sprite instanceof AnimatedSprite) {
+        AnimatedSprite animatedSprite = (AnimatedSprite) sprite;
+        animatedSprite.startAnimation(Animation.WALK);
+      }
+    }
+  }
+
+  @Override
+  public void update() {
+    if (sprite instanceof AnimatedSprite) {
+      ((AnimatedSprite) sprite).update();
+    }
+  }
   
-  /**
-   * Compare entities based on their location.
-   * Used to correctly draw multiple entities of varying y values.
-   */
-  public int compareTo(Entity e) {
-    return entityLoc.compareTo(e.getLocation());
+  @Override
+  public void draw(RenderTarget target, RenderStates states) {
+    sprite.draw(target, states);
   }
 }
