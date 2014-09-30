@@ -29,7 +29,7 @@ public class Game {
   /**
    * Sets the dimensions (resolution) the window is created with.
    */
-  private final Vector2i windowDimensions = new Vector2i(1280, 720);
+  private final Vector2i windowDimensions = new Vector2i(1280,720);
   /**
    * The main object representing the player.
    */
@@ -148,7 +148,11 @@ public class Game {
                 System.out.println("RIGHT");
                 break;
               case R:
+                playerInventory.addItem(new Item(ItemType.FISH));
                 playerInventory.addItem(new Item(ItemType.HEALTH_POTION));
+                break;
+              case T:
+                playerInventory.removeItem(playerInventory.getInventory().size()-1);
             }
           }
           /**

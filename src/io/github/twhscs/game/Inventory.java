@@ -26,7 +26,9 @@ public class Inventory implements Drawable {
    * Each inventory has an array of items it can hold
    */
   private ArrayList<Item> inventory = new ArrayList<Item>();
-  
+  /**
+   * Creates an array of shapes to draw the inventory from
+   */
   private ArrayList<RectangleShape> itemSlots = new ArrayList<RectangleShape>();
   /**
    * Max items held in each inventory
@@ -52,7 +54,14 @@ public class Inventory implements Drawable {
    * Boolean determining whether the window will be displayed or not
    */
   private boolean visible = false;
-  
+  /**
+   * Number used to scale all inventory dimensions
+   */
+  private int rectSize = 64;
+  /**
+   * Used to determine whether or not to draw action menu
+   */
+  private boolean actionMenuDisplayed = false;
   /**
    * Default inventory object
    */
@@ -68,8 +77,8 @@ public class Inventory implements Drawable {
     
     createInventorySlots(centerScreenPosition); //Creates all the inventory slots in their positions
 
-    selectionBox.setPosition(itemSlots.get(selectedSlot).getPosition().x-1, //Initializes the selector in starting spot
-        itemSlots.get(selectedSlot).getPosition().y-1); //Needs an offset of one because outline box is two pixels wider on each side
+    placeSelectionBox();
+    
   }
   
 /**
@@ -79,7 +88,7 @@ public class Inventory implements Drawable {
   public void createInventorySlots(Vector2i centerPosition){
     
     
-    int rectSize = 64; //Number used to scale all other inventory dimensions
+    
     
     int rectSpacing = 6;
     int initialScreenOffsetX = centerPosition.x - centerPosition.x/4; //Center the inventory on x axis
@@ -152,7 +161,7 @@ public class Inventory implements Drawable {
       armorSlot.setOutlineThickness(2f);
       
       armorSlot.setPosition(initialScreenOffsetX + ((rectSize + 6)*2), // Offset armor slot on x axis by two squares right of center
-          (initialScreenOffsetY - ((rectSize - 7)*4) - ((rectSize * count)) + 2)); //Places first armor slot on bottom and places the next slot on top of preceding
+          (initialScreenOffsetY - ((rectSize - rectSpacing)*4) - ((rectSize * count)) + rectSpacing)); //Places first armor slot on bottom and places the next slot on top of preceding
       
       //Adds the armor slots to the inventory arrayList
       itemSlots.add(armorSlot);
@@ -174,6 +183,7 @@ public class Inventory implements Drawable {
      */
     if(inventory.size() < maxItems){
       inventory.add(i);
+      i.setDisplayPosition(inventory.size()-1, itemSlots, rectSize);
     }
   }
   
@@ -182,13 +192,14 @@ public class Inventory implements Drawable {
    * @param place is spot in the inventory item is removed from
    */
   public void removeItem(int place){
-    inventory.remove(place);
+    if(inventory.size()>0)
+      inventory.remove(place);
   }
   
   /**
    * Returns inventory
    */
-  public ArrayList<Item> getInventory(){
+  public ArrayList<Item> getInventory() {
     return inventory;
   }
 
@@ -202,11 +213,9 @@ public class Inventory implements Drawable {
     for(RectangleShape inventorySlots: itemSlots){
       inventorySlots.draw(target, states);
     }
-    
     for(Item item: inventory){
       item.draw(target, states);
     }
-   
   }
   
   /**
@@ -269,7 +278,7 @@ public class Inventory implements Drawable {
       selectedSlot--; //If it is, move down armor slot
     
     else if(selectedSlot == 15) //Check if selected slot is bottom armor slot
-      selectedSlot = 3; //If so, move to inventory slot directly below bottom armor slot
+      selectedSlot = 2; //If so, move to inventory slot directly below bottom armor slot
     
     placeSelectionBox(); //Readjusts and repositions selection box
     }
@@ -295,6 +304,14 @@ public class Inventory implements Drawable {
     
     placeSelectionBox(); //Re-adjust and reposition selection box
   }
-
-
+  
+  /**
+   * Toggles action menu for displaying and interacting
+   */
+  public void toggleActionMenu(){
+    if(actionMenuDisplayed == false)
+      actionMenuDisplayed = true;
+    else if(actionMenuDisplayed == true)
+      actionMenuDisplayed = false;
+  }
 }

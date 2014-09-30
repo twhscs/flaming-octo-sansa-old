@@ -1,9 +1,11 @@
 package io.github.twhscs.game;
 
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
 import org.jsfml.graphics.Drawable;
 import org.jsfml.graphics.Font;
+import org.jsfml.graphics.RectangleShape;
 import org.jsfml.graphics.RenderStates;
 import org.jsfml.graphics.RenderTarget;
 import org.jsfml.graphics.Sprite;
@@ -25,7 +27,7 @@ public class Item extends Entity implements Drawable{
   
   private String itemName;
 
-  private Sprite itemSprite;
+  private Sprite itemSprite = new Sprite();
   
   private Texture itemTexture = new Texture();
   
@@ -44,42 +46,27 @@ public class Item extends Entity implements Drawable{
     }catch(Exception ex){
       ex.printStackTrace();
     }
-
-    /**
-     * Check the type of item and assign attributes
-     * depending on the item type
-     */
     setItemAttributes(itemType);
-    displayedItemText.setStyle(Text.BOLD | Text.UNDERLINED);
-    displayedItemText.getLocalBounds();
   }
   
+
   /**
-   * The location for each item texture
+   * Assigns all the different attributes to the items
+   * @param itemType is the type of item
    */
-  private Vector2f getTextureCoords(ItemType itemType){
-    /**
-     * Position of the texture in the image
-     */
-    Vector2f textureCoords = new Vector2f(0,0);
-    /**
-     * Check the type and return where the texture is
-     */
-    switch(itemType){
-      case HEALTH_POTION:
-        return textureCoords = new Vector2f(10,10);
-      default:
-        return textureCoords;
-    }
-  }
-  
   public void setItemAttributes(ItemType itemType){
     switch(itemType){
       case HEALTH_POTION:
         itemName = "Health Potion";
         healthRegen = 20;
         displayedItemText = new Text(itemName, kenpixel, 16);
+        setSprite("potion_health");
         break;
+      case FISH:
+        itemName = "Fish";
+        healthRegen = 10;
+        displayedItemText = new Text(itemName, kenpixel, 16);
+        setSprite("fish");
       default:
         break;
     }
@@ -88,36 +75,34 @@ public class Item extends Entity implements Drawable{
   public void useItem(){
     
   }
+  
+  public void setDisplayPosition(int inventorySize, ArrayList<RectangleShape> inventorySlots, int rectSize){
+    /**
+     * Center the item texture on the item slot
+     */
+    float offset = rectSize/2 - (itemSprite.getScale().x * itemTexture.getSize().x)/2;
+    /**
+     * Add offset to the itemslot coordinates to get correct position
+     */
+    Vector2f spritePosition = new Vector2f(inventorySlots.get(inventorySize).getPosition().x + offset,
+        inventorySlots.get(inventorySize).getPosition().y + offset);
+    /**
+     * Set the position
+     */
+    itemSprite.setPosition(spritePosition);
+  }
 
-  public void dropItem(){
-    
+  public void draw(RenderTarget target, RenderStates states) {
+    itemSprite.draw(target,states);
   }
   
-  public void setDisplayPosition(Vector2i centerPosition, int inventorySize, int maxItems){
-    
-    int centerX = centerPosition.x;
-    int centerY = centerPosition.y;
-    int spaceBetweenLines = 30;
-    int initialBufferX = 120;
-    int initialBufferY = 100;
-    int spaceBetweenColumns = 350;
-    
-    centerY = centerY + initialBufferY + (inventorySize*spaceBetweenLines);
-
-    if(inventorySize < (maxItems / 2))
-      centerX = centerX + initialBufferX;
-    else{
-      centerY = centerPosition.y + initialBufferY + ((inventorySize-10)*spaceBetweenLines);
-      centerX = centerX + spaceBetweenColumns;
+  public void setSprite(String filename){
+    try{
+      itemTexture.loadFromFile(Paths.get("resources/" + filename + ".png"));
+    }catch(Exception ex){
+      ex.printStackTrace();
     }
-    
-    Vector2f displayPosition = new Vector2f(centerX, centerY);
-    
-    displayedItemText.setPosition(displayPosition);
-  }
-
-  @Override
-  public void draw(RenderTarget target, RenderStates states) {
-    displayedItemText.draw(target, states);
+    itemSprite.setTexture(itemTexture);
+    itemSprite.setScale(new Vector2f(3, 3));
   }
 }
