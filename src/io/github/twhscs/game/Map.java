@@ -15,7 +15,7 @@ import io.github.twhscs.game.util.Resource;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Map implements Drawable, Updateable {
+public class Map implements Drawable {
 
   public enum Tile {
     WATER, SAND, GRASS;
@@ -27,7 +27,7 @@ public class Map implements Drawable, Updateable {
 
   private final int tileSize = 32;
 
-  private final Texture tileSheet = Resource.loadTexture("terrain");
+  private final Texture tileSheet = Resource.loadTexture("tileset");
 
   private final ArrayList<Entity> entities = new ArrayList<Entity>();
 
@@ -100,8 +100,7 @@ public class Map implements Drawable, Updateable {
     }
     return null;
   }
-
-  @Override
+  
   public final void update() {
     for (Entity entity : entities) {
       entity.update();

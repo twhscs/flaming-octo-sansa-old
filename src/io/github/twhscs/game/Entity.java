@@ -3,25 +3,26 @@ package io.github.twhscs.game;
 import org.jsfml.graphics.Drawable;
 import org.jsfml.graphics.RenderStates;
 import org.jsfml.graphics.RenderTarget;
-import org.jsfml.graphics.Sprite;
 
-import io.github.twhscs.game.AnimatedSprite.Animation;
 import io.github.twhscs.game.Location.Direction;
-import io.github.twhscs.game.Player.Action;
 
-public abstract class Entity implements Drawable, Updateable {
+public abstract class Entity implements Drawable {
 
   private Location location;
 
   private Map parentMap;
 
-  private Sprite sprite;
+  private BaseSprite sprite;
+  
+  protected Entity(final Location location) {
+    this.location = location;
+  }
 
-  protected final void setSprite(final Sprite sprite) {
+  protected final void setSprite(final BaseSprite sprite) {
     this.sprite = sprite;
   }
   
-  protected final Sprite getSprite() {
+  protected final BaseSprite getSprite() {
     return sprite;
   }
 
@@ -40,28 +41,18 @@ public abstract class Entity implements Drawable, Updateable {
   public final void setParentMap(final Map parentMap) {
     this.parentMap = parentMap;
   }
-
-  public void move(final Direction direction) {
+  
+  public boolean canMove(final Direction direction) {
     final Location relativeLocation = location.getRelativeLocation(direction);
-    location.setDirection(direction);
-    if (parentMap.isValidLocation(relativeLocation)) {
-      setLocation(relativeLocation);
-      if (this instanceof Player) {
-        Player player = (Player) this;
-        player.setAction(Action.MOVING);
-      }
-      if (sprite instanceof AnimatedSprite) {
-        AnimatedSprite animatedSprite = (AnimatedSprite) sprite;
-        animatedSprite.startAnimation(Animation.WALK);
-      }
-    }
+    return parentMap.isValidLocation(relativeLocation);
   }
 
-  @Override
+  public void move(final Direction direction) {
+    location.setDirection(direction);
+  }
+  
   public void update() {
-    if (sprite instanceof AnimatedSprite) {
-      ((AnimatedSprite) sprite).update();
-    }
+    sprite.update();
   }
   
   @Override

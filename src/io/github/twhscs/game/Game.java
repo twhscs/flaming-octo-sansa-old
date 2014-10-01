@@ -93,6 +93,10 @@ public class Game {
      */
     currentMap = new Map();
     currentMap.addEntity(player);
+    InanimateObject rock = new InanimateObject(new Location(1, 1), "rock");
+    currentMap.addEntity(rock);
+    NonplayerCharacter deadpool = new NonplayerCharacter(new Location(2, 2), "npc2_spriteset", "Joe");
+    currentMap.addEntity(deadpool);
     /*
      * Configure other options.
      */

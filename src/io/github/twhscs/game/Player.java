@@ -1,6 +1,5 @@
 package io.github.twhscs.game;
 
-import io.github.twhscs.game.Location.Direction;
 
 public class Player extends Entity {
 
@@ -15,8 +14,8 @@ public class Player extends Entity {
   }
 
   public Player(final Location location) {
-    setLocation(location);
-    setSprite(new AnimatedSprite("player", this));
+    super(location);
+    setSprite(new AnimateSprite("spriteset", this));
   }
 
   public final Action getAction() {
@@ -25,20 +24,5 @@ public class Player extends Entity {
 
   public final void setAction(final Action action) {
     this.action = action;
-  }
-
-  @Override
-  public final void update() {
-    if (action == Action.MOVING && !((AnimatedSprite) getSprite()).isAnimating()) {
-      action = Action.NONE;
-    }
-    super.update();
-  }
-
-  @Override
-  public final void move(final Direction direction) {
-    if (action == Action.NONE) {
-      super.move(direction);
-    }
   }
 }

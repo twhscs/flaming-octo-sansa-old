@@ -13,7 +13,11 @@ public class Location implements Comparable<Location> {
   private Direction direction;
 
   public Location() {
-    this(new Vector2f(0, 0), Direction.SOUTH);
+    this(0, 0);
+  }
+  
+  public Location(final int posX, final int posY) {
+    this(new Vector2f(posX, posY), Direction.SOUTH);
   }
 
   public Location(final Vector2f position, final Direction direction) {

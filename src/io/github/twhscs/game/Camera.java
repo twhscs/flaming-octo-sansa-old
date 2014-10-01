@@ -33,7 +33,7 @@ public class Camera {
    * Center the camera on the position of an animated sprite.
    * @param s The sprite to center on.
    */
-  public void centerOn(AnimatedSprite s) {
+  public void centerOn(AnimateSprite s) {
     // Copy the default view
     View newView = new View(defaultView.getCenter(), defaultView.getSize()); 
     Vector2f spritePos = s.getSprite().getPosition(); // Get the vector position of the sprite
