@@ -52,6 +52,10 @@ public class Inventory implements Drawable {
    */
   private RectangleShape actionMenu;
   /**
+   * Instantiates the action menu selection box
+   */
+  private RectangleShape actionMenuSelectionBox;
+  /**
    * Boolean determining whether the window will be displayed or not
    */
   private boolean visible = false;
@@ -69,8 +73,7 @@ public class Inventory implements Drawable {
    */
   public Inventory(Vector2i screenResolution) {
 
-    inventoryBackground = new RectangleShape(new Vector2f(screenResolution)); // Creates the
-                                                                              // background
+    inventoryBackground = new RectangleShape(new Vector2f(screenResolution)); //Creates background
     inventoryBackground.setFillColor(new Color(Color.BLACK, 230)); // Makes the background black
 
     /**
@@ -78,9 +81,8 @@ public class Inventory implements Drawable {
      */
     centerScreenPosition = new Vector2i((screenResolution.x / 2), (screenResolution.y / 2));
 
-    createInventorySlots(centerScreenPosition); // Creates all the inventory slots in their
-                                                // positions
-
+    createInventorySlots(centerScreenPosition);
+    
     placeSelectionBox();
 
   }
@@ -95,6 +97,7 @@ public class Inventory implements Drawable {
 
 
     int rectSpacing = 6;
+    
     int initialScreenOffsetX = centerPosition.x - centerPosition.x / 4; // Center the inventory on x
                                                                         // axis
     int initialScreenOffsetY = centerPosition.y + centerPosition.y / 2; // Center inventory on y
@@ -125,20 +128,12 @@ public class Inventory implements Drawable {
      * Creates player box which will hold player image
      */
     RectangleShape playerBox = new RectangleShape();
-    playerBox.setSize(new Vector2f(rectSize * 2 + 4, rectSize * 4)); // Set as two slots wide and
-                                                                     // four slots tall
+    playerBox.setSize(new Vector2f(rectSize * 2 + 4, rectSize * 4));
     playerBox.setFillColor(new Color(Color.CYAN, 120));
     playerBox.setOutlineThickness(2f);
     playerBox.setOutlineColor(new Color(Color.CYAN, 200));
-    playerBox.setPosition(new Vector2f(initialScreenOffsetX + (rectSize + rectSpacing) * 3, // Move
-                                                                                            // box
-                                                                                            // over
-                                                                                            // three
-                                                                                            // slots
-                                                                                            // on x
-                                                                                            // axis
-        initialScreenOffsetY - (rectSize + rectSpacing) * 6)); // Scale box six slots above y offset
-                                                               // position
+    playerBox.setPosition(new Vector2f(initialScreenOffsetX + (rectSize + rectSpacing) * 3,
+        initialScreenOffsetY - (rectSize + rectSpacing) * 6)); 
 
     /**
      * Creates all actual inventory slots
@@ -178,28 +173,10 @@ public class Inventory implements Drawable {
       armorSlot.setOutlineColor(new Color(Color.CYAN, 200));
       armorSlot.setOutlineThickness(2f);
 
-      armorSlot
-          .setPosition(
-              initialScreenOffsetX + ((rectSize + 6) * 2), // Offset armor slot on x axis by two
-                                                           // squares right of center
-              (initialScreenOffsetY - ((rectSize - rectSpacing) * 4) - ((rectSize * count)) + rectSpacing)); // Places
-                                                                                                             // first
-                                                                                                             // armor
-                                                                                                             // slot
-                                                                                                             // on
-                                                                                                             // bottom
-                                                                                                             // and
-                                                                                                             // places
-                                                                                                             // the
-                                                                                                             // next
-                                                                                                             // slot
-                                                                                                             // on
-                                                                                                             // top
-                                                                                                             // of
-                                                                                                             // preceding
-
-      // Adds the armor slots to the inventory arrayList
-      itemSlots.add(armorSlot);
+      armorSlot.setPosition(initialScreenOffsetX + ((rectSize + 6) * 2), 
+          (initialScreenOffsetY - ((rectSize - rectSpacing) * 4) - ((rectSize * count)) + rectSpacing));
+      
+      itemSlots.add(armorSlot); // Adds the armor slots to the inventory arrayList
     }
 
     /**
@@ -260,9 +237,6 @@ public class Inventory implements Drawable {
     }
     if (actionMenuDisplayed) {
       actionMenu.draw(target, states);
-
-     // if (inventory.get(selectedSlot) != null)
-        //inventory.get(selectedSlot).getDisplayedItemText().draw(target, states);
     }
   }
 
@@ -377,7 +351,6 @@ public class Inventory implements Drawable {
     actionMenu.setPosition(newPosition);
     actionMenu.setSize(new Vector2f(rectSize * 3, rectSize * 3));
 
-    //inventory.get(selectedSlot).setDisplayedItemTextPosition(newPosition);
 
   }
 

@@ -27,7 +27,7 @@ public class Item extends Entity implements Drawable {
 
   Font kenpixel = new Font();
 
-  private Text displayedItemText;
+  private Text displayedItemText = new Text();
 
   private String itemName;
 
