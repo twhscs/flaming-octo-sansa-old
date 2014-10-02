@@ -86,10 +86,7 @@ public class Inventory implements Drawable {
  * @param centerPosition is center of the screen
  */
   public void createInventorySlots(Vector2i centerPosition){
-    
-    
-    
-    
+
     int rectSpacing = 6;
     int initialScreenOffsetX = centerPosition.x - centerPosition.x/4; //Center the inventory on x axis
     int initialScreenOffsetY = centerPosition.y + centerPosition.y/2; //Center inventory on y axis
