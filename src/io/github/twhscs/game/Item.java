@@ -19,43 +19,49 @@ import org.jsfml.system.Vector2i;
  * @author chris
  *
  */
-public class Item extends Entity implements Drawable{
-  
+public class Item extends Entity implements Drawable {
+
+  public enum ItemType {
+    HEALTH_POTION, FISH, GOLD
+  }
+
   Font kenpixel = new Font();
-  
+
   private Text displayedItemText;
-  
+
   private String itemName;
 
   private Sprite itemSprite = new Sprite();
-  
+
   private Texture itemTexture = new Texture();
-  
+
   private Vector2i inventoryLocation;
-  
+
   private int healthRegen;
 
   /**
    * Creates a new item
+   * 
    * @param i is the type of item created
    */
-  public Item(ItemType itemType){
-    
-    try{
+  public Item(ItemType itemType) {
+
+    try {
       kenpixel.loadFromFile(Paths.get("resources/kenpixel.ttf"));
-    }catch(Exception ex){
+    } catch (Exception ex) {
       ex.printStackTrace();
     }
     setItemAttributes(itemType);
   }
-  
+
 
   /**
    * Assigns all the different attributes to the items
+   * 
    * @param itemType is the type of item
    */
-  public void setItemAttributes(ItemType itemType){
-    switch(itemType){
+  public void setItemAttributes(ItemType itemType) {
+    switch (itemType) {
       case HEALTH_POTION:
         itemName = "Health Potion";
         healthRegen = 20;
@@ -71,21 +77,23 @@ public class Item extends Entity implements Drawable{
         break;
     }
   }
-  
-  public void useItem(){
-    
+
+  public void useItem() {
+
   }
-  
-  public void setDisplayPosition(int inventorySize, ArrayList<RectangleShape> inventorySlots, int rectSize){
+
+  public void setDisplayPosition(int inventorySize, ArrayList<RectangleShape> inventorySlots,
+      int rectSize) {
     /**
      * Center the item texture on the item slot
      */
-    float offset = rectSize/2 - (itemSprite.getScale().x * itemTexture.getSize().x)/2;
+    float offset = rectSize / 2 - (itemSprite.getScale().x * itemTexture.getSize().x) / 2;
     /**
      * Add offset to the itemslot coordinates to get correct position
      */
-    Vector2f spritePosition = new Vector2f(inventorySlots.get(inventorySize).getPosition().x + offset,
-        inventorySlots.get(inventorySize).getPosition().y + offset);
+    Vector2f spritePosition =
+        new Vector2f(inventorySlots.get(inventorySize).getPosition().x + offset, inventorySlots
+            .get(inventorySize).getPosition().y + offset);
     /**
      * Set the position
      */
@@ -93,16 +101,25 @@ public class Item extends Entity implements Drawable{
   }
 
   public void draw(RenderTarget target, RenderStates states) {
-    itemSprite.draw(target,states);
+    itemSprite.draw(target, states);
   }
-  
-  public void setSprite(String filename){
-    try{
+
+  public void setSprite(String filename) {
+    try {
       itemTexture.loadFromFile(Paths.get("resources/" + filename + ".png"));
-    }catch(Exception ex){
+    } catch (Exception ex) {
       ex.printStackTrace();
     }
     itemSprite.setTexture(itemTexture);
     itemSprite.setScale(new Vector2f(3, 3));
   }
+
+  public void setDisplayedItemTextPosition(Vector2f newPosition) {
+    displayedItemText.setPosition(newPosition);
+  }
+
+  public Text getDisplayedItemText() {
+    return displayedItemText;
+  }
+
 }
