@@ -1,4 +1,4 @@
-package io.github.twhscs.game;
+package io.github.twhscs.game.core;
 
 import org.jsfml.graphics.IntRect;
 import org.jsfml.system.Vector2f;
@@ -11,21 +11,21 @@ public class AnimateSprite extends BaseSprite {
   }
 
   private final float speed = 5;
-  
+
   private final int maxFrames = 4;
-  
+
   private int currentFrame = 0;
 
   private int updates = 0;
 
   private Animation currentAnimation = Animation.NONE;
-  
+
   private Vector2f position = new Vector2f(0, 0);
-  
+
   public AnimateSprite(final String fileName, final Entity parent) {
     super(fileName, new Vector2i(32, 48), parent);
   }
-  
+
   public final void startAnimation(final Animation animation) {
     this.currentAnimation = animation;
   }
@@ -57,19 +57,21 @@ public class AnimateSprite extends BaseSprite {
     return new IntRect(positionX, positionY, getDimensions().x, getDimensions().y);
   }
 
-  public final void updatePosition(final float amount) {
+  public final void updatePosition(float amount) {
+    amount = Math.abs(1 - amount);
+    position = getParent().getLocation().getPosition();
     switch (getParent().getLocation().getDirection()) {
       case NORTH:
-        position = Vector2f.sub(position, new Vector2f(0, amount));
-        break;
-      case SOUTH:
         position = Vector2f.add(position, new Vector2f(0, amount));
         break;
+      case SOUTH:
+        position = Vector2f.sub(position, new Vector2f(0, amount));
+        break;
       case EAST:
-        position = Vector2f.add(position, new Vector2f(amount, 0));
+        position = Vector2f.sub(position, new Vector2f(amount, 0));
         break;
       case WEST:
-        position = Vector2f.sub(position, new Vector2f(amount, 0));
+        position = Vector2f.add(position, new Vector2f(amount, 0));
         break;
       default:
         break;
@@ -80,6 +82,8 @@ public class AnimateSprite extends BaseSprite {
   public final void update() {
     getSprite().setTextureRect(getDefaultTextureRect());
     if (isAnimating()) {
+      updatePosition((updates + (speed * currentFrame)) / (speed * maxFrames));
+      updates++;
       if (updates >= speed) {
         updates = 0;
         currentFrame++;
@@ -88,13 +92,8 @@ public class AnimateSprite extends BaseSprite {
           currentAnimation = Animation.NONE;
         }
       }
-      if (currentAnimation == Animation.WALK) {
-        final float step = 1 / (maxFrames * speed);
-        updatePosition(step);
-      }
-      updates++;
     } else {
-     position = getParent().getLocation().getPosition();
+      position = getParent().getLocation().getPosition();
     }
     Vector2f newPosition = Vector2f.mul(position, getDimensions().x);
     newPosition = Vector2f.sub(newPosition, new Vector2f(0, getDimensions().y - getDimensions().x));

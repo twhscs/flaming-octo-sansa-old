@@ -1,10 +1,11 @@
-package io.github.twhscs.game;
+package io.github.twhscs.game.core;
 
 import org.jsfml.graphics.Drawable;
 import org.jsfml.graphics.RenderStates;
 import org.jsfml.graphics.RenderTarget;
 import org.jsfml.graphics.Sprite;
 import org.jsfml.graphics.Texture;
+import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
 
 import io.github.twhscs.game.util.Resource;
@@ -37,6 +38,10 @@ public abstract class BaseSprite implements Drawable {
   }
   
   public abstract void update();
+  
+  public Vector2f getPosition() {
+    return sprite.getPosition();
+  }
   
   @Override
   public final void draw(final RenderTarget target, final RenderStates states) {

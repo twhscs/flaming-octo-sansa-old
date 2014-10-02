@@ -3,4 +3,4 @@
  * @author Robert
  *
  */
-package io.github.twhscs.game;
+package io.github.twhscs.game.core;

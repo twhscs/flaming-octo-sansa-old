@@ -1,10 +1,10 @@
-package io.github.twhscs.game;
+package io.github.twhscs.game.core;
 
 import org.jsfml.graphics.Drawable;
 import org.jsfml.graphics.RenderStates;
 import org.jsfml.graphics.RenderTarget;
 
-import io.github.twhscs.game.Location.Direction;
+import io.github.twhscs.game.core.Location.Direction;
 
 public abstract class Entity implements Drawable {
 
@@ -13,7 +13,7 @@ public abstract class Entity implements Drawable {
   private Map parentMap;
 
   private BaseSprite sprite;
-  
+
   protected Entity(final Location location) {
     this.location = location;
   }
@@ -21,8 +21,8 @@ public abstract class Entity implements Drawable {
   protected final void setSprite(final BaseSprite sprite) {
     this.sprite = sprite;
   }
-  
-  protected final BaseSprite getSprite() {
+
+  protected BaseSprite getSprite() {
     return sprite;
   }
 
@@ -41,20 +41,20 @@ public abstract class Entity implements Drawable {
   public final void setParentMap(final Map parentMap) {
     this.parentMap = parentMap;
   }
-  
-  public boolean canMove(final Direction direction) {
-    final Location relativeLocation = location.getRelativeLocation(direction);
-    return parentMap.isValidLocation(relativeLocation);
-  }
 
-  public void move(final Direction direction) {
-    location.setDirection(direction);
-  }
+  /**public void move(final Direction direction) {
+    Location location = this.location.getRelativeLocation(direction);
+    if (parentMap.isValidLocation(location)) {
+      this.location = location;
+    }
+  }*/
   
+  public abstract void move(final Direction direction);
+
   public void update() {
     sprite.update();
   }
-  
+
   @Override
   public void draw(RenderTarget target, RenderStates states) {
     sprite.draw(target, states);

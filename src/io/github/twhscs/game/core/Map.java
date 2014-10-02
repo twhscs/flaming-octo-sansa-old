@@ -1,4 +1,4 @@
-package io.github.twhscs.game;
+package io.github.twhscs.game.core;
 
 import org.jsfml.graphics.Drawable;
 import org.jsfml.graphics.PrimitiveType;
@@ -14,6 +14,8 @@ import io.github.twhscs.game.util.Resource;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class Map implements Drawable {
 
@@ -32,7 +34,7 @@ public class Map implements Drawable {
   private final ArrayList<Entity> entities = new ArrayList<Entity>();
 
   public Map() {
-    this(new Vector2i(10, 10), Tile.GRASS);
+    this(new Vector2i(10, 10), Tile.SAND);
   }
 
   public Map(final Vector2i dimensions, final Tile defaultTile) {
@@ -82,7 +84,8 @@ public class Map implements Drawable {
     final Vector2f position = location.getPosition();
     final boolean aboveMin = (position.x >= 0 && position.y >= 0);
     final boolean belowMax = (position.x < dimensions.x && position.y < dimensions.y);
-    return (aboveMin && belowMax && getTileCollision(getTile(location)));
+    final boolean open = getEntity(location) == null;
+    return (aboveMin && belowMax && open && getTileCollision(getTile(location)));
   }
 
   public final void addEntity(final Entity entity) {
@@ -100,11 +103,17 @@ public class Map implements Drawable {
     }
     return null;
   }
-  
+
   public final void update() {
     for (Entity entity : entities) {
       entity.update();
     }
+    Collections.sort(entities, new Comparator<Entity>() {
+      @Override
+      public int compare(final Entity entity1, final Entity entity2) {
+        return entity1.getLocation().compareTo(entity2.getLocation());
+      }
+    });
   }
 
   @Override

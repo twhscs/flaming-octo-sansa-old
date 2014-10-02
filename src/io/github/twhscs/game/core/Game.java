@@ -1,8 +1,9 @@
-package io.github.twhscs.game;
+package io.github.twhscs.game.core;
 
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Clock;
 import org.jsfml.system.Vector2f;
+import org.jsfml.system.Vector2i;
 import org.jsfml.window.ContextSettings;
 import org.jsfml.window.Joystick;
 import org.jsfml.window.Joystick.Axis;
@@ -13,7 +14,7 @@ import org.jsfml.window.WindowStyle;
 import org.jsfml.window.event.Event;
 import org.jsfml.window.event.JoystickMoveEvent;
 
-import io.github.twhscs.game.Location.Direction;
+import io.github.twhscs.game.core.Location.Direction;
 import io.github.twhscs.game.util.Resource;
 
 public class Game {
@@ -36,13 +37,16 @@ public class Game {
 
   private boolean usingController = false;
 
-  // private final Camera camera = new Camera(window);
+  private Camera camera;
 
   private Map currentMap;
 
   private final Player player = new Player();
 
   private boolean devMode = false;
+  
+  private InanimateObject rock;
+  private NonplayerCharacter deadpool;
 
   public static final void main(final String[] args) {
     final Game game = new Game();
@@ -93,14 +97,18 @@ public class Game {
      */
     currentMap = new Map();
     currentMap.addEntity(player);
-    InanimateObject rock = new InanimateObject(new Location(1, 1), "rock");
+    rock = new InanimateObject(new Location(1, 1), "rock");
     currentMap.addEntity(rock);
-    NonplayerCharacter deadpool = new NonplayerCharacter(new Location(2, 2), "npc2_spriteset", "Joe");
+    deadpool = new NonplayerCharacter(new Location(2, 2), "npc2_spriteset", "Joe");
     currentMap.addEntity(deadpool);
+    InanimateObject tree = new InanimateObject(new Location(1, 3), "tree", new Vector2i(32, 48));
+    currentMap.addEntity(tree);
     /*
      * Configure other options.
      */
     usingController = Joystick.isConnected(0);
+    
+    camera = new Camera(window);
   }
 
   private final void getInput() {
@@ -223,9 +231,9 @@ public class Game {
           handleInput(InputAction.MOVE_UP);
         } else if (Joystick.getAxisPosition(0, Axis.POV_X) == -100) {
           handleInput(InputAction.MOVE_DOWN);
-        } else if (Joystick.getAxisPosition(0, Axis.POV_Y) == 100) {
-          handleInput(InputAction.MOVE_LEFT);
         } else if (Joystick.getAxisPosition(0, Axis.POV_Y) == -100) {
+          handleInput(InputAction.MOVE_LEFT);
+        } else if (Joystick.getAxisPosition(0, Axis.POV_Y) == 100) {
           handleInput(InputAction.MOVE_RIGHT);
         }
       }
@@ -238,6 +246,7 @@ public class Game {
         devMode = !devMode;
         break;
       case INTERACT:
+        deadpool.move(Direction.SOUTH);
         break;
       case MOVE_DOWN:
         player.move(Direction.SOUTH);
@@ -252,6 +261,7 @@ public class Game {
         player.move(Direction.NORTH);
         break;
       case OPEN_INVENTORY:
+        rock.move(Direction.SOUTH);
         break;
       case OPEN_MENU:
         break;
@@ -274,6 +284,7 @@ public class Game {
 
   private final void handleDrawing() {
     window.clear();
+    camera.targetEntity(player);
     window.draw(currentMap);
     window.display();
   }
