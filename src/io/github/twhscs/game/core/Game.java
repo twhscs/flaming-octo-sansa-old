@@ -3,7 +3,6 @@ package io.github.twhscs.game.core;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.system.Clock;
 import org.jsfml.system.Vector2f;
-import org.jsfml.system.Vector2i;
 import org.jsfml.window.ContextSettings;
 import org.jsfml.window.Joystick;
 import org.jsfml.window.Joystick.Axis;
@@ -44,7 +43,7 @@ public class Game {
   private final Player player = new Player();
 
   private boolean devMode = false;
-  
+
   private InanimateObject rock;
   private NonplayerCharacter deadpool;
 
@@ -95,19 +94,21 @@ public class Game {
     /*
      * Configure and create a map.
      */
-    currentMap = new Map();
+    TerrainGenerator generator = new TerrainGenerator(5, 2, 2, 5f);
+    currentMap = generator.generate();
+    player.setLocation(currentMap.getRandomValidLocation());
     currentMap.addEntity(player);
-    rock = new InanimateObject(new Location(1, 1), "rock");
+    /*rock = new InanimateObject(new Location(new Vector2f(1, 1), Direction.SOUTH), "rock");
     currentMap.addEntity(rock);
-    deadpool = new NonplayerCharacter(new Location(2, 2), "npc2_spriteset", "Joe");
+    deadpool = new NonplayerCharacter(new Location(new Vector2f(2, 2), Direction.SOUTH), "npc2_spriteset", "Joe");
     currentMap.addEntity(deadpool);
-    InanimateObject tree = new InanimateObject(new Location(1, 3), "tree", new Vector2i(32, 48));
-    currentMap.addEntity(tree);
+    InanimateObject tree = new InanimateObject(new Location(new Vector2f(3, 3), Direction.SOUTH), "tree", new Vector2i(32, 48));
+    currentMap.addEntity(tree);*/
     /*
      * Configure other options.
      */
     usingController = Joystick.isConnected(0);
-    
+
     camera = new Camera(window);
   }
 

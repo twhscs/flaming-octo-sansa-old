@@ -20,6 +20,7 @@ public class Camera {
     View newView = new View(defaultView.getCenter(), defaultView.getSize());
     position = new Vector2f((int) position.x, (int) position.y);
     newView.setCenter(position);
+    //newView.zoom(3f);
     window.setView(newView);
   }
   

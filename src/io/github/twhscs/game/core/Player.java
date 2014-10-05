@@ -44,12 +44,15 @@ public class Player extends Entity {
 
   @Override
   public void move(Direction direction) {
-    if(!getSprite().isAnimating()) {
+    if (!getSprite().isAnimating()) {
       Location location = getLocation();
       location.setDirection(direction);
       Location newLocation = location.getRelativeLocation(direction);
+      System.out.println(getLocation());
       if (getParentMap().isValidLocation(newLocation)) {
+        System.out.println("move");
         setLocation(newLocation);
+        System.out.println(getLocation());
         getSprite().startAnimation(Animation.WALK);
         action = Action.MOVING;
       }
