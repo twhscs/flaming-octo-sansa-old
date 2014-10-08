@@ -61,7 +61,7 @@ class Map implements Drawable {
     tiles[(int) position.x][(int) position.y] = tile;
   }
 
-  private final Vector2f getTileTexture(final Tile tile) {
+  private final Vector2f getTileTexture(final Tile tile, final Location tileLocation) {
     switch (tile) {
       case WATER:
         /*
@@ -69,11 +69,11 @@ class Map implements Drawable {
          * 352); case 1: return new Vector2f(704, 352); case 2: return new Vector2f(736, 352); }
          * break;
          */
-        return new Vector2f(864, 160);
+        return new Vector2f((tileLocation.getPosition().x * tileLocation.getPosition().y) % 3 * 32 + 864, 160);
       case SAND:
         return new Vector2f(576, 352);
       case GRASS:
-        return new Vector2f(448, 352);
+        return new Vector2f((tileLocation.getPosition().x * tileLocation.getPosition().y) % 2 * 32 + 32, 352);
     }
     return null;
   }
@@ -156,7 +156,7 @@ class Map implements Drawable {
         final Tile tile = tiles[ti][tj];
         final Location tileLocation = new Location(new Vector2f(ti, tj), Direction.SOUTH);
 
-        Vector2f baseTexture = getTileTexture(tile);
+        Vector2f baseTexture = getTileTexture(tile, tileLocation);
         //
 
         if (tile == Tile.SAND
@@ -229,6 +229,70 @@ class Map implements Drawable {
             && getTile(new Location(Vector2f.add(tileLocation.getPosition(), new Vector2f(-1, -1)),
                 Direction.SOUTH)) == Tile.WATER) {
           baseTexture = new Vector2f(736, 224);
+        } else if (tile == Tile.GRASS
+            && getTile(tileLocation.getRelativeLocation(Direction.NORTH)) == Tile.SAND
+            && getTile(tileLocation.getRelativeLocation(Direction.SOUTH)) == Tile.GRASS
+            && getTile(tileLocation.getRelativeLocation(Direction.WEST)) == Tile.SAND
+            && getTile(tileLocation.getRelativeLocation(Direction.EAST)) == Tile.GRASS) {
+          baseTexture = new Vector2f(128, 800);
+        } else if (tile == Tile.GRASS
+            && getTile(tileLocation.getRelativeLocation(Direction.NORTH)) == Tile.GRASS
+            && getTile(tileLocation.getRelativeLocation(Direction.SOUTH)) == Tile.GRASS
+            && getTile(tileLocation.getRelativeLocation(Direction.WEST)) == Tile.SAND
+            && getTile(tileLocation.getRelativeLocation(Direction.EAST)) == Tile.GRASS) {
+          baseTexture = new Vector2f(128, 832);
+        } else if (tile == Tile.GRASS
+            && getTile(tileLocation.getRelativeLocation(Direction.NORTH)) == Tile.GRASS
+            && getTile(tileLocation.getRelativeLocation(Direction.SOUTH)) == Tile.SAND
+            && getTile(tileLocation.getRelativeLocation(Direction.WEST)) == Tile.SAND
+            && getTile(tileLocation.getRelativeLocation(Direction.EAST)) == Tile.GRASS) {
+          baseTexture = new Vector2f(128, 864);
+        } else if (tile == Tile.GRASS
+          && getTile(tileLocation.getRelativeLocation(Direction.NORTH)) == Tile.SAND
+          && getTile(tileLocation.getRelativeLocation(Direction.SOUTH)) == Tile.GRASS
+          && getTile(tileLocation.getRelativeLocation(Direction.WEST)) == Tile.GRASS
+          && getTile(tileLocation.getRelativeLocation(Direction.EAST)) == Tile.GRASS) {
+        baseTexture = new Vector2f(150, 800);
+        } else if (tile == Tile.GRASS
+            && getTile(tileLocation.getRelativeLocation(Direction.NORTH)) == Tile.SAND
+            && getTile(tileLocation.getRelativeLocation(Direction.SOUTH)) == Tile.GRASS
+            && getTile(tileLocation.getRelativeLocation(Direction.WEST)) == Tile.GRASS
+            && getTile(tileLocation.getRelativeLocation(Direction.EAST)) == Tile.SAND) {
+          baseTexture = new Vector2f(182, 800);
+        } else if (tile == Tile.GRASS
+            && getTile(tileLocation.getRelativeLocation(Direction.NORTH)) == Tile.GRASS
+            && getTile(tileLocation.getRelativeLocation(Direction.SOUTH)) == Tile.SAND
+            && getTile(tileLocation.getRelativeLocation(Direction.WEST)) == Tile.GRASS
+            && getTile(tileLocation.getRelativeLocation(Direction.EAST)) == Tile.GRASS) {
+          baseTexture = new Vector2f(150, 864);
+        } else if (tile == Tile.GRASS
+            && getTile(tileLocation.getRelativeLocation(Direction.NORTH)) == Tile.GRASS
+            && getTile(tileLocation.getRelativeLocation(Direction.SOUTH)) == Tile.SAND
+            && getTile(tileLocation.getRelativeLocation(Direction.WEST)) == Tile.SAND
+            && getTile(tileLocation.getRelativeLocation(Direction.EAST)) == Tile.GRASS) {
+          baseTexture = new Vector2f(128, 864);
+        } else if (tile == Tile.GRASS
+            && getTile(tileLocation.getRelativeLocation(Direction.NORTH)) == Tile.GRASS
+            && getTile(tileLocation.getRelativeLocation(Direction.SOUTH)) == Tile.SAND
+            && getTile(tileLocation.getRelativeLocation(Direction.WEST)) == Tile.GRASS
+            && getTile(tileLocation.getRelativeLocation(Direction.EAST)) == Tile.SAND) {
+          baseTexture = new Vector2f(182, 864);
+        } else if (tile == Tile.GRASS
+            && getTile(new Location(Vector2f.add(tileLocation.getPosition(), new Vector2f(1, 1)),
+                Direction.SOUTH)) == Tile.SAND) {
+          baseTexture = new Vector2f(192, 736);
+        } else if (tile == Tile.GRASS
+            && getTile(new Location(Vector2f.add(tileLocation.getPosition(), new Vector2f(-1, 1)),
+                Direction.SOUTH)) == Tile.SAND) {
+          baseTexture = new Vector2f(224, 736);
+        } else if (tile == Tile.GRASS
+            && getTile(new Location(Vector2f.add(tileLocation.getPosition(), new Vector2f(1, -1)),
+                Direction.SOUTH)) == Tile.SAND) {
+          baseTexture = new Vector2f(192, 768);
+        } else if (tile == Tile.GRASS
+            && getTile(new Location(Vector2f.add(tileLocation.getPosition(), new Vector2f(-1, -1)),
+                Direction.SOUTH)) == Tile.SAND) {
+          baseTexture = new Vector2f(224, 768);
         }
 
 
