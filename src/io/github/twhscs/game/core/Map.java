@@ -71,7 +71,7 @@ class Map implements Drawable {
          */
         return new Vector2f((tileLocation.getPosition().x * tileLocation.getPosition().y) % 3 * 32 + 864, 160);
       case SAND:
-        return new Vector2f(576, 352);
+        return new Vector2f((tileLocation.getPosition().x * tileLocation.getPosition().y) % 3 * 32 + 576, 352);
       case GRASS:
         return new Vector2f((tileLocation.getPosition().x * tileLocation.getPosition().y) % 2 * 32 + 32, 352);
     }
