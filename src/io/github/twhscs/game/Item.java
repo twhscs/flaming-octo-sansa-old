@@ -1,7 +1,9 @@
 package io.github.twhscs.game;
 
+import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import org.jsfml.graphics.Drawable;
 import org.jsfml.graphics.Font;
@@ -38,6 +40,8 @@ public class Item extends Entity implements Drawable {
   private Vector2i inventoryLocation;
 
   private int healthRegen;
+  
+
 
   /**
    * Creates a new item
@@ -47,6 +51,7 @@ public class Item extends Entity implements Drawable {
   public Item(ItemType itemType) {
 
     try {
+
       kenpixel.loadFromFile(Paths.get("resources/kenpixel.ttf"));
     } catch (Exception ex) {
       ex.printStackTrace();

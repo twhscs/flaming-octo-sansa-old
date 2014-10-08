@@ -1,5 +1,9 @@
 package io.github.twhscs.game;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.RenderWindow;
 import org.jsfml.graphics.TextStyle;
@@ -52,21 +56,27 @@ public class Game {
    * The player's personal inventory
    */
   private Inventory playerInventory;
-
+  /**
+   * Reads all items for item creation later
+   */
+  private Scanner itemListScanner;
+  
   /**
    * Creates an instance of the game and runs it.
    * 
    * @param args Command line arguments passed in at run-time.
+   * @throws FileNotFoundException 
    */
-  public static void main(String[] args) {
+  public static void main(String[] args) throws FileNotFoundException {
     Game g = new Game();
     g.run();
   }
 
   /**
    * Configures one time settings at start-up.
+   * @throws FileNotFoundException 
    */
-  public void handleInitialization() {
+  public void handleInitialization() throws FileNotFoundException {
     window.create(new VideoMode(windowDimensions.x, windowDimensions.y), windowTitle);
     player.changeMap(new Map(10, 10, Tile.SAND));
     camera = new Camera(window);
@@ -75,8 +85,9 @@ public class Game {
 
   /**
    * Initializes the game and holds the main loop.
+   * @throws FileNotFoundException 
    */
-  public void run() {
+  public void run() throws FileNotFoundException {
     handleInitialization(); // Initial configuration of various things
     int framesDrawn = 0; // Count each frame that is drawn
     float updateRate = 20; // Limit the logic loop to update at 20Hz (times per second)
@@ -215,4 +226,5 @@ public class Game {
       window.draw(playerInventory);
     window.display(); // Show the window to the user
   }
+  
 }

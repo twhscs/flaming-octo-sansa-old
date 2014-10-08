@@ -1,16 +1,22 @@
 package io.github.twhscs.game;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Scanner;
 
-import org.jsfml.audio.Sound;
-import org.jsfml.audio.SoundBuffer;
 import org.jsfml.graphics.Color;
 import org.jsfml.graphics.Drawable;
+import org.jsfml.graphics.Font;
 import org.jsfml.graphics.RectangleShape;
 import org.jsfml.graphics.RenderStates;
 import org.jsfml.graphics.RenderTarget;
 import org.jsfml.system.Vector2f;
 import org.jsfml.system.Vector2i;
+import org.json.simple.parser.JSONParser;
+
+
 
 /**
  * 
@@ -67,13 +73,28 @@ public class Inventory implements Drawable {
    * Used to determine whether or not to draw action menu
    */
   private boolean actionMenuDisplayed = true;
-
+  /**
+   * Text for inventory
+   */
+  private Font kenPixel = new Font();
+  /**
+   * Scanner for item list
+   */
+  private Scanner itemListScanner;
   /**
    * Default inventory object
    */
   public Inventory(Vector2i screenResolution) {
 
-    inventoryBackground = new RectangleShape(new Vector2f(screenResolution)); //Creates background
+    try{
+      kenPixel.loadFromFile(Paths.get("resources/kenpixel.ttf"));
+    }catch(Exception e){
+      e.printStackTrace();
+    }
+    
+    initializeItems();
+
+    inventoryBackground = new RectangleShape(new Vector2f(screenResolution)); // Creates background
     inventoryBackground.setFillColor(new Color(Color.BLACK, 230)); // Makes the background black
 
     /**
@@ -82,7 +103,7 @@ public class Inventory implements Drawable {
     centerScreenPosition = new Vector2i((screenResolution.x / 2), (screenResolution.y / 2));
 
     createInventorySlots(centerScreenPosition);
-    
+
     placeSelectionBox();
 
   }
@@ -97,7 +118,7 @@ public class Inventory implements Drawable {
 
 
     int rectSpacing = 6;
-    
+
     int initialScreenOffsetX = centerPosition.x - centerPosition.x / 4; // Center the inventory on x
                                                                         // axis
     int initialScreenOffsetY = centerPosition.y + centerPosition.y / 2; // Center inventory on y
@@ -133,7 +154,7 @@ public class Inventory implements Drawable {
     playerBox.setOutlineThickness(2f);
     playerBox.setOutlineColor(new Color(Color.CYAN, 200));
     playerBox.setPosition(new Vector2f(initialScreenOffsetX + (rectSize + rectSpacing) * 3,
-        initialScreenOffsetY - (rectSize + rectSpacing) * 6)); 
+        initialScreenOffsetY - (rectSize + rectSpacing) * 6));
 
     /**
      * Creates all actual inventory slots
@@ -173,9 +194,9 @@ public class Inventory implements Drawable {
       armorSlot.setOutlineColor(new Color(Color.CYAN, 200));
       armorSlot.setOutlineThickness(2f);
 
-      armorSlot.setPosition(initialScreenOffsetX + ((rectSize + 6) * 2), 
-          (initialScreenOffsetY - ((rectSize - rectSpacing) * 4) - ((rectSize * count)) + rectSpacing));
-      
+      armorSlot.setPosition(initialScreenOffsetX + ((rectSize + 6) * 2), (initialScreenOffsetY
+          - ((rectSize + rectSpacing) * 6) + ((rectSize * count))));
+
       itemSlots.add(armorSlot); // Adds the armor slots to the inventory arrayList
     }
 
@@ -206,8 +227,8 @@ public class Inventory implements Drawable {
   }
 
   /**
-   * Removes item from inventory
-   * 
+   * Removes item from inventory.
+   *
    * @param place is spot in the inventory item is removed from
    */
   public void removeItem(int place) {
@@ -243,13 +264,13 @@ public class Inventory implements Drawable {
   /**
    * Swap between inventory being drawable or visible
    */
-  public void toggleInventoryDisplay() {
+  public final void toggleInventoryDisplay() {
     visible = !visible;
   }
 
   /**
-   * Return whether the inventory is visible or not
-   * 
+   * Return whether the inventory is visible or not.
+   *
    * @return
    */
   public boolean isVisible() {
@@ -280,12 +301,12 @@ public class Inventory implements Drawable {
   public void moveSelectionBoxUp() {
 
     if (selectedSlot >= 5) { // If slot is not on the top row of inventory slots
-      if (selectedSlot >= 15 && selectedSlot <= 17) // Check if selected slot is an armor slot
-        selectedSlot++; // If it is an armor slot, move up one armor slot
+      if (selectedSlot >= 16 && selectedSlot <= 18) // Check if selected slot is an armor slot
+        selectedSlot--; // If it is an armor slot, move up one armor slot
       else if (selectedSlot <= 14) // If slot is not on the top row but not an armor slot
         selectedSlot -= 5; // Move down one row
     } else if (selectedSlot <= 4) // If the slot is on the top row of inventory slots
-      selectedSlot = 15; // Move to bottom armor slot
+      selectedSlot = 18; // Move to bottom armor slot
 
     placeSelectionBox(); // Resize and re-position selection box
     placeActionMenu();
@@ -300,11 +321,11 @@ public class Inventory implements Drawable {
                                                 // rows
       selectedSlot += 5; // If it is, move down a row
 
-    else if (selectedSlot >= 16 && selectedSlot <= 18) // Check if selected slot is the top three
+    else if (selectedSlot >= 15 && selectedSlot <= 17) // Check if selected slot is the top three
                                                        // armor slots
-      selectedSlot--; // If it is, move down armor slot
+      selectedSlot++; // If it is, move down armor slot
 
-    else if (selectedSlot == 15) // Check if selected slot is bottom armor slot
+    else if (selectedSlot == 18) // Check if selected slot is bottom armor slot
       selectedSlot = 2; // If so, move to inventory slot directly below bottom armor slot
 
     placeSelectionBox(); // Readjusts and repositions selection box
@@ -344,15 +365,33 @@ public class Inventory implements Drawable {
   }
 
   public void placeActionMenu() {
-    Vector2f newPosition =
-        Vector2f.add(itemSlots.get(selectedSlot).getPosition(), new Vector2f(rectSize, rectSize
-            * -2));
+    Vector2f newPosition = Vector2f.add(itemSlots.get(selectedSlot).getPosition(),
+        new Vector2f(rectSize,rectSize* -2));
 
     actionMenu.setPosition(newPosition);
     actionMenu.setSize(new Vector2f(rectSize * 3, rectSize * 3));
 
 
   }
+  
+  private void initializeItems() {
+    String itemList = "";
+    
+     try {
+     itemListScanner = new Scanner(new File("resources/itemlist.dat"));
+     } catch (FileNotFoundException e) {
+     e.printStackTrace();
+     } 
+     while(itemListScanner.hasNext()){
+       itemList += itemListScanner.next();
+     }
+     
+     
+     JSONParser jsonParser = new JSONParser();
+     
+     
+     
+   }
 
 
 }

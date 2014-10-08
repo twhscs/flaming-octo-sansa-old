@@ -1,0 +1,26 @@
+{"Consumable":[
+	{"Health_Potion":[
+		{"Uses": {"Use", "Drop"}},
+		{"HealthRegen": 10},
+		{"Value": 50},
+		{"Weight": 5}
+		]}
+	]
+
+ "Wearable":[
+ 	{"Iron_Chest":[
+ 		{"Uses": {"Use", "Drop", "Equip"}},
+ 		{"Damage_Res": 20},
+ 		{"Value": 30},
+ 		{"Weight": 50}
+ 		]}
+ 	]
+ 	
+ "Default":[
+ 	{"Stick":[
+ 		{"Uses": {"Use", "Drop"}},
+ 		{"Value": 1},
+ 		{"Weight": 5}
+ 		]}
+ 	]
+}
