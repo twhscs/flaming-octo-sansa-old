@@ -100,8 +100,8 @@ public class Game {
 	// anti-aliasing
 	window.create(videoMode, windowTitle, windowStyle, new ContextSettings(antialiasingLevel));
 	menu = new MainMenu(windowDimensions, window); // Create the main menu
-	currentMap = new Map(10, 10, Tile.SAND); // Create the main map
-	player = new Player(currentMap.getRandomValidLocation(), dialogueUI); // Create
+	currentMap = new Map(5000, 5000, Tile.SAND); // Create the main map
+	player = new Player(new Location(0,0), dialogueUI); // Create
 									      // the
 									      // player
 	currentMap.addEntity(player); // Add the player to the map
